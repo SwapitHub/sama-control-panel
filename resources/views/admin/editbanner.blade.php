@@ -125,7 +125,7 @@
 										<label for="validationCustom2" class="col-xl-3 col-md-4">Link</label>
 										<div class="col-xl-8 col-md-7">
 											<input class="form-control" id="link" placeholder="Link"
-											value="{{ old('link',$bannerdata->link) }}" name="link" type="url">
+											value="{{ old('link',$bannerdata->link) }}" name="link" type="text">
 										</div>
 									</div>
                                     <div class="form-group row">
