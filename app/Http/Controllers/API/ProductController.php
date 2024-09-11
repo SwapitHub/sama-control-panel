@@ -588,10 +588,10 @@ class ProductController extends Controller
             }
         } else {
             $menu = 2;
-            $query = ProductModel::where('menu', $menu)
+            $query = ProductModel::orderBy('id','asc')->where('menu', $menu)
                 ->where('status', 'true')
                 // ->where('is_newest', 1)
-                ->orwhere('is_bestseller', 1)
+                // ->orwhere('is_bestseller', 1)
                 ->limit(5)
                 ->get();
             foreach ($query as $pro) {
