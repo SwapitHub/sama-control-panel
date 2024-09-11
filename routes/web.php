@@ -104,9 +104,9 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::get('/addcategory', [App\Http\Controllers\CategoryController::class, 'addCatView'])->name('admin.addcategory');
     Route::get('/categories', [App\Http\Controllers\CategoryController::class, 'index'])->name('admin.categories');
     Route::post('/categories', [App\Http\Controllers\CategoryController::class, 'postCategory'])->name('admin.addcategories');
-    Route::get('/getselectedcategory/{menuid}/{selected}', [App\Http\Controllers\CategoryController::class, 'getSelectedCategory']);
+    Route::get('/getselectedcategory/{menuid}/{selected}', [App\Http\Controllers\CategoryController::class, 'getSelectedCategory'])->name('get.selected.category');
     Route::post('/getselectedcategories/{menuid}', [App\Http\Controllers\CategoryController::class, 'getSelectedCategories']);
-    Route::get('/getcategories/{id}', [App\Http\Controllers\CategoryController::class, 'getCategory']);
+    Route::get('/getcategories/{id}', [App\Http\Controllers\CategoryController::class, 'getCategory'])->name('admin.getsubcat');
     Route::get('/editcategory/{id}', [App\Http\Controllers\CategoryController::class, 'editCategory'])->name('admin.editcategory');
     Route::post('/editcategory', [App\Http\Controllers\CategoryController::class, 'updateCategory'])->name('admin.updatecategory');
     Route::get('/deletecategory/{id}', [App\Http\Controllers\CategoryController::class, 'deleteCategory'])->name('admin.delcategory');

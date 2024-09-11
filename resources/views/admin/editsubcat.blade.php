@@ -187,8 +187,12 @@
 	});
 	function getCatlist(menuid)
 	{
-		var url = "{{ url('getselectedcategory') }}";
-		var act_url = url +'/'+ menuid +'/'+ {{ $subcat->category_id }};
+		// var url = "{{ url('getselectedcategory') }}";
+		// var act_url = url +'/'+ menuid +'/'+ {{ $subcat->category_id }};
+
+        var url = "{{ route('get.selected.category', ['menuid' => ':menuid', 'selected' => $subcat->category_id]) }}";
+        act_url = url.replace(':menuid', menuid);
+
 		$("#category_id").html('<option>processing...</option>');
 		$("#category_id").load(act_url);
 	}
@@ -196,7 +200,8 @@
 		var menuId = $(this).val();
 		if(menuId)
 		{
-			var url = "{{ url('getcategories') }}/"+menuId;
+			// var url = "{{ url('getcategories') }}/"+menuId;
+            var utl = "{{ route('admin.getsubcat',['id'=>':menuId']) }}"
 			$("#category_id").html('<option>processing...</option>');
 			$("#category_id").load(url);
 		}
