@@ -20,6 +20,10 @@ Route::get('/ping', function () {
     return response()->json(['status' => 'ok'], 200);
 });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// define base page url
+Route::get('/', function(){
+    return '<h2>Welcome to Sama</h2>';
+});
 
 // Route::group(['prefix' => 'admin'], function() {
 Route::group(['prefix'=>'admin','middleware' => 'admin.guest'], function () {
