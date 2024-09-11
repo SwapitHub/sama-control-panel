@@ -67,6 +67,12 @@
                                                 <td>Designation :</td>
                                                 <td>{{ Auth::user()->designation }}</td>
                                             </tr>
+                                            <tr>
+                                                <td>Prifix :</td>
+                                                <td><a href="javascript:void(0)" data-bs-toggle="modal"
+                                                        data-bs-target="#prifixModal" style="color:blue"
+                                                        title="Edit prifix">{{ $settings->route_web_prifix }}</a></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -91,21 +97,22 @@
                                 </li>
                                 <li class="nav-item"><a class="nav-link" id="contact-top-tab" data-bs-toggle="tab"
                                         href="#top-contact-update" role="tab" aria-controls="top-contact"
-                                        aria-selected="false"><i data-feather="image" class="me-2"></i>Update icon </a> </li>
+                                        aria-selected="false"><i data-feather="image" class="me-2"></i>Update icon </a>
+                                </li>
                             </ul>
                             <div class="tab-content" id="top-tabContent">
                                 <div class="tab-pane fade show active" id="top-profile" role="tabpanel"
                                     aria-labelledby="top-profile-tab">
                                     <h5 class="f-w-600">Profile</h5>
-                                    <form class="form" action="{{ route('admin.updateProfile') }}"
-                                        method="POST" id="profile-form" data-parsley-validate>
+                                    <form class="form" action="{{ route('admin.updateProfile') }}" method="POST"
+                                        id="profile-form" data-parsley-validate>
                                         @csrf
                                         <input type="hidden" name="id" value="{{ Auth::user()->id }}">
                                         <div class="form-group row">
                                             <label for="validationCustom0" class="col-xl-3 col-md-4"><span>*</span> Admin
                                                 Name</label>
                                             <div class="col-xl-8 col-md-7">
-                                                <input class="form-control" id="adminname"  name="adminname" type="text"
+                                                <input class="form-control" id="adminname" name="adminname" type="text"
                                                     value="{{ Auth::user()->name }}">
                                             </div>
                                         </div>
@@ -114,7 +121,7 @@
                                                 Email</label>
                                             <div class="col-xl-8 col-md-7">
                                                 <input class="form-control" id="email" name="email" type="text"
-                                                    value="{{ Auth::user()->email }}" >
+                                                    value="{{ Auth::user()->email }}">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -129,8 +136,9 @@
                                             <label for="validationCustom4" class="col-xl-3 col-md-4">
                                                 Password</label>
                                             <div class="col-xl-8 col-md-7">
-                                                <input class="form-control" id="password" value="{{ Auth::user()->password }}" readonly
-                                                    type="password" required="">
+                                                <input class="form-control" id="password"
+                                                    value="{{ Auth::user()->password }}" readonly type="password"
+                                                    required="">
                                             </div>
                                         </div>
                                         <div class="pull-left">
@@ -144,9 +152,10 @@
                                     aria-labelledby="contact-top-tab">
                                     <div class="account-setting">
                                         <h5 class="f-w-600">Change Password</h5>
-                                        <form class="form" action="{{ route('admin.changePassword') }}" method="POST">
-                                             @csrf
-                                             <input type="hidden" name="id" value="{{ Auth::user()->id }}">
+                                        <form class="form" action="{{ route('admin.changePassword') }}"
+                                            method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ Auth::user()->id }}">
                                             <div class="form-group row">
                                                 <label for="validationCustom1" class="col-xl-3 col-md-4"><span>*</span>
                                                     Old Password</label>
@@ -183,9 +192,8 @@
                                     aria-labelledby="contact-top-tab">
                                     <div class="account-setting">
                                         <h5 class="f-w-600">Update icon</h5>
-                                        <form class="form-icon"
-                                            action="{{ route('admin.upload_icon') }}"
-                                            method="POST" enctype="multipart/form-data">
+                                        <form class="form-icon" action="{{ route('admin.upload_icon') }}" method="POST"
+                                            enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ Auth::user()->id }}">
                                             <div class="form-group row">
@@ -213,5 +221,28 @@
             </div>
         </div>
         <!-- Container-fluid Ends-->
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="prifixModal" tabindex="-1" aria-labelledby="prifixModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="prifixModalLabel">Prifix</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <form action="{{ route('update.prifix') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="text" name="route_web_prifix" class="form-control"
+                            value="{{ $settings->route_web_prifix }}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection

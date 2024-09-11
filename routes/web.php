@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Settings;
+
 /*
 		|--------------------------------------------------------------------------
 		| Web Routes
@@ -14,20 +16,20 @@ use Illuminate\Support\Facades\Mail;
 		|
 	*/
 
-
+$prefix = Settings::first()->route_web_prifix?? 'admin';
 Auth::routes();
 Route::get('/ping', function () {
     return response()->json(['status' => 'ok'], 200);
 });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// define base page url
-// Route::group(['prefix' => 'admin'], function() {
-Route::group(['prefix'=>'control','middleware' => 'admin.guest'], function () {
+
+Route::group(['prefix'=>$prefix,'middleware' => 'admin.guest'], function () {
     Route::get('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'index'])->name('admin.login');
     Route::post('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'authenticate'])->name('admin.auth');
 });
 
-Route::group(['prefix'=>'control','middleware' => ['admin.auth', 'checkUserAllowed']], function () {
+Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed']], function () {
+    Route::post('/prifix/update',[App\Http\Controllers\AdminController::class, 'updatePrifix'])->name('update.prifix');
     Route::get('/export-data', [App\Http\Controllers\LanguageController::class, 'export'])->name('data.exportapi');
     Route::get('/test-email', [App\Http\Controllers\LanguageController::class, 'sendMail']);
     Route::get('/logout', [App\Http\Controllers\Auth\AdminAuthController::class, 'logout'])->name('admin.logout');

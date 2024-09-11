@@ -9,6 +9,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Admin;
+use App\Models\Settings;
 use App\Models\ProductModel;
 use App\Models\OrderModel;
 use App\Models\TransactionModel;
@@ -19,6 +20,8 @@ use App\Models\User;
 use App\Library\UpsShipping;
 use App\Library\Clover;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
+
 
 class AdminController extends Controller
 {
@@ -55,7 +58,6 @@ class AdminController extends Controller
 
         // Calculate the average basket value
         return $averageBasket = $orderCount > 0 ? $totalValue / $orderCount : 0;
-
     }
     ## get daily sales
     public function getTodayTransactions()
@@ -93,14 +95,15 @@ class AdminController extends Controller
             'monthlysales' =>  $this->monthlysales,
             'averageBasket' =>  $this->averageBasket,
             'transactions' =>   $this->transactions,
-            'ring_sizer'=> Cmscontent::where('id',7)->first()
+            'ring_sizer' => Cmscontent::where('id', 7)->first()
         ];
         return view('admin.dashboard', $data);
     }
 
     public function profile()
     {
-        return view('admin.profile');
+        $settings = Settings::first();
+        return view('admin.profile', ['settings' => $settings]);
     }
 
     public function updateProfile(Request $request)
@@ -206,5 +209,21 @@ class AdminController extends Controller
         $result = $clover->createCharge($chargeData);
         echo "<pre>";
         var_dump($result);
+    }
+
+    public function updatePrifix(Request $request)
+    {
+        $request->validate([
+            'route_web_prifix' => 'required|string|max:255',
+        ]);
+        $settings = Settings::first();
+        $setting = Settings::find($settings->id);
+        $setting->route_web_prifix = $request->route_web_prifix;
+        $setting->save();
+        Artisan::call('config:cache');
+        Artisan::call('config:clear');
+        $url = url($setting->route_web_prifix . '/profile');
+        // $url = 'http://127.0.0.1:8000/' . $setting->route_web_prifix . '/profile';
+        return redirect(url($url))->with('success', 'Prefix updated successfully');
     }
 }
