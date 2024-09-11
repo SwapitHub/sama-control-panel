@@ -590,7 +590,7 @@ class ProductController extends Controller
             $menu = 2;
             $query = ProductModel::where('menu', $menu)
                 ->where('status', 'true')
-                ->where('is_newest', 1)
+                // ->where('is_newest', 1)
                 ->orwhere('is_bestseller', 1)
                 ->limit(5)
                 ->get();

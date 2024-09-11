@@ -22,7 +22,7 @@ Route::get('/ping', function () {
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Route::group(['prefix' => 'admin'], function() {
-Route::group(['middleware' => 'admin.guest'], function () {
+Route::group(['prefix'=>'admin','middleware' => 'admin.guest'], function () {
     Route::get('/', [App\Http\Controllers\Auth\AdminAuthController::class, 'index'])->name('admin.login');
     Route::post('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'authenticate'])->name('admin.auth');
 });
@@ -405,3 +405,4 @@ Route::group(['middleware' => ['admin.auth', 'checkUserAllowed']], function () {
 
     // Route::get('/send-test-email', [App\Http\Controllers\HomeContentController::class, 'sendTestEmail']);
 });
+
