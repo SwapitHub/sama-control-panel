@@ -142,7 +142,8 @@
                                                 {{-- <td>{{ substr($item->description,0,30) }} ...</td> --}}
                                                 {{-- <td>{{ $item->metalColor }}</td> --}}
                                                 <td>
-                                                    <a href="{{ url('/db-product-list/edit') }}/{{ $item->id }}"
+                                                    {{-- <a href="{{ url('/db-product-list/edit') }}/{{ $item->id }}" --}}
+                                                    <a href="{{ route('admin.product.edit',['id'=>$item->id]) }}"
                                                         title="Edit"><i class="fa fa-edit"></i></a>
                                                     {{-- <a href="{{ url('/db-product-list/edit') }}/{{ $item->id }}" title="Edit"><i class="fa fa-trash"></i></a> --}}
                                                 </td>

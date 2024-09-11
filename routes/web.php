@@ -241,7 +241,7 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::post('/product/update/{id}', [App\Http\Controllers\ProductController::class, 'updateProduct'])->name('admin.product.postupdate');
 
 
-    Route::get('/get-subcategories/{category_id}', [App\Http\Controllers\ProductController::class, 'getSubcategories']);
+    Route::get('/get-subcategories/{category_id}', [App\Http\Controllers\ProductController::class, 'getSubcategories'])->name('admin.getsubcategories');
 
 
 
@@ -366,10 +366,10 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     //gemstone filters
 
     // filter data uri
-    Route::get('/filter-category/{id}', [App\Http\Controllers\FilterDataController::class, 'filterCategory']);
-    Route::get('/filter-subcategory/{menu}/{category}', [App\Http\Controllers\FilterDataController::class, 'filterSubCategory']);
-    Route::post('/filter-product', [App\Http\Controllers\FilterDataController::class, 'filterProduct']);
-    Route::any('/filter-variant-product', [App\Http\Controllers\FilterDataController::class, 'filterVariantProduct']);
+    Route::get('/filter-category/{id}', [App\Http\Controllers\FilterDataController::class, 'filterCategory'])->name('filter.category');
+    Route::get('/filter-subcategory/{menu}/{category}', [App\Http\Controllers\FilterDataController::class, 'filterSubCategory'])->name('filter.subcategory');
+    Route::post('/filter-product', [App\Http\Controllers\FilterDataController::class, 'filterProduct'])->name('admin.filter.product');
+    Route::any('/filter-variant-product', [App\Http\Controllers\FilterDataController::class, 'filterVariantProduct'])->name('filter.variant.products');
     Route::post('/add-similar-product', [App\Http\Controllers\FilterDataController::class, 'addSimilarProduct'])->name('admin.product.similar');
     Route::post('/add-variant-product/{base_product_id}', [App\Http\Controllers\FilterDataController::class, 'addVariantProduct'])->name('admin.product.variant');
     Route::post('/similar-product/remove', [App\Http\Controllers\FilterDataController::class, 'removeSimilarProduct'])->name('admin.remove.similar');

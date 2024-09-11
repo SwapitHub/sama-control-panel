@@ -977,16 +977,18 @@
         <script>
             $("#similar-menu").change(function() {
                 var menuid = $("#similar-menu").val();
-                var baseUrl = "{{ url('/') }}";
-                var url = baseUrl + '/filter-category/' + menuid;
+                var url = "{{ route('filter.category',['id'=>':menuid']) }}";
+                url = url.replace(':menuid', menuid);
                 $("#similar-category").load(url);
             });
 
             $("#similar-category").change(function() {
                 var menuid = $("#similar-menu").val();
                 var catid = $("#similar-category").val();
-                var baseUrl = "{{ url('/') }}";
-                var url = baseUrl + '/filter-subcategory/' + menuid + "/" + catid;
+                // var baseUrl = "{{ url('/') }}";
+                // var url = baseUrl + '/filter-subcategory/' + menuid + "/" + catid;
+                var url = "{{ route('filter.subcategory', ['menu' => ':menuid', 'category' => ':catid']) }}";
+                url = url.replace(':menuid', menuid).replace(':catid', catid);
                 $("#similar-subcategory").load(url);
                 var sub_category_id = ''
                 getProductBasedOnValues(menuid, catid, sub_category_id);
@@ -1010,7 +1012,7 @@
                 };
                 var csrfToken = '{{ csrf_token() }}';
                 $.ajax({
-                    url: "{{ url('filter-product') }}",
+                    url: "{{ route('admin.filter.product') }}",
                     method: "POST",
                     data: {
                         _token: csrfToken,
@@ -1111,16 +1113,16 @@
             // added new script for change manu category and subcategory
             $("#product-menu").change(function() {
                 var menuid = $("#product-menu").val();
-                var baseUrl = "{{ url('/') }}";
-                var url = baseUrl + '/filter-category/' + menuid;
+                var url = "{{ route('filter.category',['id'=>':menuid']) }}";
+                url = url.replace(':menuid', menuid);
                 $("#product-category").load(url);
             });
 
             $("#product-category").change(function() {
                 var menuid = $("#product-menu").val();
                 var catid = $("#product-category").val();
-                var baseUrl = "{{ url('/') }}";
-                var url = baseUrl + '/filter-subcategory/' + menuid + "/" + catid;
+                var url = "{{ route('filter.subcategory', ['menu' => ':menuid', 'category' => ':catid']) }}";
+                url = url.replace(':menuid', menuid).replace(':catid', catid);
                 $("#product-subcatagory").load(url);
                 var sub_category_id = ''
                 getProductBasedOnValues(menuid, catid, sub_category_id);
@@ -1130,16 +1132,16 @@
             // show product for variant
             $("#variant-menu").change(function() {
                 var menuid = $("#variant-menu").val();
-                var baseUrl = "{{ url('/') }}";
-                var url = baseUrl + '/filter-category/' + menuid;
+                var url = "{{ route('filter.category',['id'=>':menuid']) }}";
+                url = url.replace(':menuid', menuid);
                 $("#variant-category").load(url);
             });
 
             $("#variant-category").change(function() {
                 var menuid = $("#variant-menu").val();
                 var catid = $("#variant-category").val();
-                var baseUrl = "{{ url('/') }}";
-                var url = baseUrl + '/filter-subcategory/' + menuid + "/" + catid;
+                var url = "{{ route('filter.subcategory', ['menu' => ':menuid', 'category' => ':catid']) }}";
+                url = url.replace(':menuid', menuid).replace(':catid', catid);
                 $("#variant-subcategory").load(url);
                 var sub_category_id = ''
                 getProductBasedOnValues(menuid, catid, sub_category_id);
@@ -1163,7 +1165,7 @@
                 };
                 var csrfToken = '{{ csrf_token() }}';
                 $.ajax({
-                    url: "{{ url('filter-variant-product') }}",
+                    url: "{{ route('filter.variant.products') }}",
                     method: "POST",
                     data: {
                         _token: csrfToken,
@@ -1173,7 +1175,7 @@
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function(res) {
-                        // console.log(res);
+                        console.log(res);
                         $("#multichoice-pro").html(res);
                     },
                     error: function(res) {
@@ -1188,8 +1190,10 @@
 
                 $('#category_id').change(function() {
                     var categoryId = $(this).val();
+                    var url = "{{ route('admin.getsubcategories',['category_id'=>':categoryId']) }}";
+                    url = url.replace(':categoryId', categoryId);
                     $.ajax({
-                        url: '/get-subcategories/' + categoryId,
+                        url: url,
                         type: 'GET',
                         success: function(data) {
                             console.log('Data received from server:', data); // Debug AJAX response
