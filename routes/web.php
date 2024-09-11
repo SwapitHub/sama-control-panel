@@ -21,17 +21,13 @@ Route::get('/ping', function () {
 });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 // define base page url
-Route::get('/', function(){
-    return '<h2>Welcome to Sama</h2>';
-});
-
 // Route::group(['prefix' => 'admin'], function() {
 Route::group(['prefix'=>'admin','middleware' => 'admin.guest'], function () {
     Route::get('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'index'])->name('admin.login');
     Route::post('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'authenticate'])->name('admin.auth');
 });
 
-Route::group(['middleware' => ['admin.auth', 'checkUserAllowed']], function () {
+Route::group(['prefix'=>'admin','middleware' => ['admin.auth', 'checkUserAllowed']], function () {
     Route::get('/export-data', [App\Http\Controllers\LanguageController::class, 'export'])->name('data.exportapi');
     Route::get('/test-email', [App\Http\Controllers\LanguageController::class, 'sendMail']);
     Route::get('/logout', [App\Http\Controllers\Auth\AdminAuthController::class, 'logout'])->name('admin.logout');
