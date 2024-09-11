@@ -154,7 +154,7 @@ class RegisterController extends BaseController
                 ];
                 if($user->login_count == 0)
                 {
-                  Mail::to($user->email)->send(new WelcomeEmail($user));
+                //   Mail::to($user->email)->send(new WelcomeEmail($user));
                 }
                 $update_count = User::find($user->id);
                 $update_count->login_count = $user->login_count + 1;
