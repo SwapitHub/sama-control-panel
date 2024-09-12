@@ -233,7 +233,7 @@
                                         @foreach ($latest_orders as $latestOrder)
                                             <tr>
                                                 <td>{{ $latestOrder->order_id }}</td>
-                                                <td class="digits">${{ $latestOrder->amount }}</td>
+                                                <td class="digits">${{ $latestOrder->amount +  $latestOrder->tax + $latestOrder->shipping }}</td>
                                                 <td>{{ $latestOrder->method }}</td>
                                                 <td
                                                     class="font-{{ $latestOrder->status == 'SUCCESS' ? 'success' : 'primary' }}">

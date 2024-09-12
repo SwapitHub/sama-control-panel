@@ -126,7 +126,7 @@
                                                 </td>
 
                                                 <td data-field="number">$
-                                                    {{ number_format($order->amount, 0, '.', '') }} /- <br>
+                                                    {{ number_format($order->amount + $order->tax + $order->shipping  , 0, '.', '') }} /- <br>
                                                     {{ $order->method }}
                                                 </td>
                                                 <td data-field="number">

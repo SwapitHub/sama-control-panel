@@ -21,14 +21,17 @@ Auth::routes();
 Route::get('/ping', function () {
     return response()->json(['status' => 'ok'], 200);
 });
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/', function(){
+    return "<h3>Welcome to sama</h3>";
+});
 Route::group(['prefix'=>$prefix,'middleware' => 'admin.guest'], function () {
     Route::get('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'index'])->name('admin.login');
     Route::post('/login', [App\Http\Controllers\Auth\AdminAuthController::class, 'authenticate'])->name('admin.auth');
 });
 
 Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed']], function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::post('/prifix/update',[App\Http\Controllers\AdminController::class, 'updatePrifix'])->name('update.prifix');
     Route::get('/export-data', [App\Http\Controllers\LanguageController::class, 'export'])->name('data.exportapi');
     Route::get('/test-email', [App\Http\Controllers\LanguageController::class, 'sendMail']);
