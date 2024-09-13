@@ -127,7 +127,7 @@ class OrderController extends Controller
             $invoice = new InvoiceModel();
             $invoice->invoice_id = $this->generateInvoiceID();
             $invoice->order_id = $orderData->order_id;
-            $invoice->amount = $orderData->amount;
+            $invoice->amount = $orderData->amount +  $orderData->tax +  $orderData->shipping;
             $invoice->status = 'true';
             if ($invoice->save()) {
                 return 'true';

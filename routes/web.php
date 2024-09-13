@@ -316,7 +316,7 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
 
     Route::get('/orders/export', [App\Http\Controllers\OrderController::class, 'ordersExport'])->name('sale.orders.export');
     Route::get('/orders', [App\Http\Controllers\OrderController::class, 'orders'])->name('sale.orders');
-    Route::get('/orders/invoice/{order_id}', [App\Http\Controllers\OrderController::class, 'makeInvoice'])->name('order.invoice');
+    Route::get('/orders/invoice/{order_id}', [App\Http\Controllers\OrderController::class, 'makeInvoice'])->name('make.order.invoice');
     Route::get('/invoice/{order_id}', [App\Http\Controllers\InvoiceController::class, 'invoicePdf'])->name('sale.orders.invoice.download');
     Route::get('/order-detail/{id}', [App\Http\Controllers\OrderController::class, 'ordersDetail'])->name('sale.orders.detail');
     Route::get('/orders/cancel/{order_id}', [App\Http\Controllers\OrderController::class, 'createRefund'])->name('sale.orders.refund');

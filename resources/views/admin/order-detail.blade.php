@@ -82,7 +82,7 @@
                                                         <th colspan="2">Items</th>
                                                         <th class="text-end" colspan="2">
                                                             <a href="javascript:void(0)" class="theme-color">Grand Total -
-                                                                ${{ number_format(round($order->amount, 2), 0, '.', '') }}</a>
+                                                                ${{ number_format(round($order->amount + $order->tax + $order->shipping, 2), 0, '.', '') }}</a>
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -225,7 +225,7 @@
                                                             <h5>Shipping :</h5>
                                                         </td>
                                                         <td>
-                                                            <h4>$0</h4>
+                                                            <h4>${{ $order->shipping }}</h4>
                                                         </td>
                                                     </tr>
 
@@ -234,7 +234,7 @@
                                                             <h5>Tax :</h5>
                                                         </td>
                                                         <td>
-                                                            <h4>$0</h4>
+                                                            <h4>${{ $order->tax }}</h4>
                                                         </td>
                                                     </tr>
 
@@ -244,7 +244,7 @@
                                                         </td>
                                                         <td>
                                                             <h4 class="theme-color fw-bold">
-                                                                ${{ number_format(round($order->amount, 2), 0, '.', '') }}
+                                                                ${{ number_format(round($order->amount + $order->tax + $order->shipping, 2), 0, '.', '') }}
                                                             </h4>
                                                         </td>
                                                     </tr>
@@ -264,7 +264,7 @@
                                                             {{ date('M d , Y', strtotime($order->created_at)) }}
                                                         </li>
                                                         <li>Order Total:
-                                                            ${{ number_format(round($order->amount, 2), 0, '.', '') }}</li>
+                                                            ${{ number_format(round($order->amount + $order->shipping + $order->tax, 2), 0, '.', '') }}</li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -388,7 +388,9 @@
             // }
 
             function MakeInvoice(order_id) {
-                var url = "{{ url('/orders/invoice/') }}" + '/' + order_id;
+                //var url = "{{ url('/orders/invoice/') }}" + '/' + order_id;
+                var url = "{{ route('make.order.invoice',['order_id'=>':order_id']) }}";
+                url = url.replace(':order_id', order_id);
                 swal({
                         title: "Are you sure?",
                         text: "You want to create invoice!",
