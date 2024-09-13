@@ -828,8 +828,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="col-form-label">Product Price</h5>
-                                <a href="#" type="button" class="btn btn-small btn-outline-success"
-                                    data-bs-toggle="modal" data-bs-target="#addSimilarProductModal">Add Price</a>
+                                <a href="{{ route('admin.product.price',['id'=>$product['id']]) }}" type="button" class="btn btn-small btn-outline-success">Add Price</a>
                             </div>
                             <div class="card-body" id="similar-table">
                                 <div class="table-responsive">
