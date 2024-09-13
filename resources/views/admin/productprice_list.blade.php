@@ -259,7 +259,7 @@
                 $("#PriceModal").modal('show');
                 $("#priceProduct").val(price);
                 $("#id").val(id);
-                var url = "{{ route('admin.product.edit', ['id' => ':id']) }}";
+                var url = "{{ route('admin.productprice.edit', ['id' => ':id']) }}";
                 url = url.replace(':id', id);
                 $("#priceForm").attr('action', url);
 
