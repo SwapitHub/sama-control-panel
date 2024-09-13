@@ -476,20 +476,20 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             Default Image</label>
-                                        <input class="form-control" id="validationCustom02" type="file"
+                                        <input class="form-control"  type="file"
                                             name="default_image_url">
                                     </div>
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             Default Image alt</label>
-                                        <input class="form-control" id="validationCustom02" type="text"
+                                        <input class="form-control"  type="text"
                                             name="default_image_alt"
                                             value="{{ old('default_image_alt', $product->default_image_alt) }}">
                                     </div>
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             shippingDay</label>
-                                        <input class="form-control" name="shippingDay" id="validationCustom02"
+                                        <input class="form-control" name="shippingDay"
                                             type="number" required=""
                                             value="{{ old('shippingDay', $product->shippingDay) }}">
                                     </div>
@@ -533,7 +533,7 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label">
                                             Meta Title</label>
-                                        <input class="form-control" name="meta_title" id="validationCustom02"
+                                        <input class="form-control" name="meta_title"
                                             type="text"
                                             value="{{ !empty($product->meta_title) ? $product->meta_title : $product->name }}"
                                             placeholder="Meta Title">
@@ -548,10 +548,7 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label">
                                             Meta Description</label>
-                                        <input class="form-control" name="meta_description" id="validationCustom02"
-                                            type="text"
-                                            value="{{ !empty($product->meta_description) ? $product->meta_description : $product->description }}"
-                                            placeholder="Meta Description">
+                                        <textarea placeholder="Meta Description" name="meta_description" class="form-control" cols="5" rows="5">{{ !empty($product->meta_description) ? $product->meta_description : $product->description }}</textarea>
                                     </div>
                                     <!--meta data--->
 
