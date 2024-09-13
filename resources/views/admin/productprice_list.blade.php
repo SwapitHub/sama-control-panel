@@ -191,8 +191,8 @@
                                                 <?php $i = 1; ?>
                                                 @foreach ($prices as $index => $item)
                                                     <tr>
-                                                        {{-- <td data-field="text">{{ $index + 1 }}</td> --}}
-                                                        <td data-field="text">{{ $item->id }}</td>
+                                                        <td data-field="text">{{ $index + 1 }}</td>
+                                                        {{-- <td data-field="text">{{ $item->id }}</td> --}}
                                                         <td data-field="text">{{ $item->metalType }} </td>
                                                         <td data-field="text">{{ $item->metalColor }}</td>
                                                         <td data-field="text">{{ $item->diamondQuality }}</td>
