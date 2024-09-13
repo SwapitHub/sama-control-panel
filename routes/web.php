@@ -243,6 +243,10 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::post('/product/configurable', [App\Http\Controllers\ProductController::class, 'addConfigurableProduct'])->name('admin.product.configurable');
     Route::post('/product/update/{id}', [App\Http\Controllers\ProductController::class, 'updateProduct'])->name('admin.product.postupdate');
 
+    Route::get('/product/price/{id}', [App\Http\Controllers\ProductController::class, 'productPrices'])->name('admin.product.price');
+    Route::post('/product/price/add', [App\Http\Controllers\ProductController::class, 'productPriceAdd'])->name('admin.product.add');
+    Route::post('/product/price/edit/{id}', [App\Http\Controllers\ProductController::class, 'productPriceEdit'])->name('admin.product.edit');
+
 
     Route::get('/get-subcategories/{category_id}', [App\Http\Controllers\ProductController::class, 'getSubcategories'])->name('admin.getsubcategories');
 

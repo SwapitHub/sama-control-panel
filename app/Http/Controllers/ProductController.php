@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\ProductModel;
+use App\Models\ProductPrice;
 use App\Models\Menu;
 use App\Models\MetalColor;
 use App\Models\RingMetal;
@@ -29,6 +30,68 @@ use App\Jobs\ExportPriceJob;
 
 class ProductController extends Controller
 {
+
+    public function productPriceEdit(Request $request, $id)
+    {
+        $price = ProductPrice::find($id);
+        if ($price != null) {
+            $price->price = $request->price;
+            $price->save();
+            return redirect()->back()->with('success', 'Price Updated successfully');
+        } else {
+            return 'Invalid Price ID';
+        }
+    }
+
+    public function productPriceAdd(Request $request)
+    {
+        $rules = [
+            'product_sku' => 'required',
+            'metalType' => 'required',
+            'metalColor' => 'required',
+            'diamondQuality' => 'required',
+            'finishLevel' => 'required',
+        ];
+        $messages = [
+            'product_sku' => 'The Product sku field required.',
+            'metalType.unique' => 'The metal type is required.',
+            'metalColor.unique' => 'The metal color is required.',
+            'diamondQuality.unique' => 'The diamond quality is required.',
+            'finishLevel.unique' => 'The finish level is required.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $price = new ProductPrice;
+        $price->product_sku = $request->product_sku;
+        $price->metalType = $request->metalType;
+        $price->metalColor = $request->metalColor;
+        $price->diamondQuality = $request->diamondQuality;
+        $price->diamond_type = $request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown';
+        $price->finishLevel = $request->finishLevel;
+        $price->save();
+        return redirect()->back()->with('success', 'Price added successfully');
+    }
+
+    public function productPrices($id)
+    {
+        $product = ProductModel::findOrFail($id);
+        if ($product != null) {
+            $pricelists = ProductPrice::orderBy('id', 'desc')->where('product_sku', $product['sku'])->get();
+            $data = [
+                'title' => 'Product Price List',
+                'product' => $product,
+                'prices' => $pricelists,
+            ];
+            return view('admin.productprice_list', $data);
+        } else {
+            return 'Invalid product';
+        }
+    }
 
     public function removeVariantProduct($id)
     {
@@ -563,6 +626,7 @@ class ProductController extends Controller
             'sub_categories' => $subcatdata,
             'product_categories' => ProductCategory::orderBy('id', 'desc')->where('status', 'true')->get(),
             'product_subcategories' => ProductSubcategory::orderBy('id', 'desc')->where('category_id', $product['category_id'])->where('status', 'true')->get(),
+            'product_prices' => ProductPrice::orderBy('id', 'desc')->where('product_sku', $product['sku'])->take(5)->get(),
         ];
 
         if ($product['type'] == 'Configurable' || $product['type'] == 'parent_product') {

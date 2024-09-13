@@ -10,6 +10,9 @@
         input#validationCustom02 {
             width: 85%;
         }
+        .table th{
+            font-size: 14px !important;
+        }
     </style>
     <div class="page-body">
         <!-- Container-fluid starts-->
@@ -227,14 +230,16 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             Finish Level</label>
-                                            {{-- <input type="text" name="finishLevel" class="form-control" value="{{ $product['finishLevel'] }}"> --}}
+                                        {{-- <input type="text" name="finishLevel" class="form-control" value="{{ $product['finishLevel'] }}"> --}}
                                         <select name="finishLevel" class="form-control">
                                             <option selected disabled>--Select--</option>
                                             <option value="Polished Blank (no stones)"
-                                                {{ $product->finishLevel == 'Polished Blank (no stones)' ? 'selected' : '' }}>Polished Blank (no stones)
+                                                {{ $product->finishLevel == 'Polished Blank (no stones)' ? 'selected' : '' }}>
+                                                Polished Blank (no stones)
                                             </option>
                                             <option value="Semi-mount (no center)"
-                                                {{ $product->finishLevel == 'Semi-mount (no center)' ? 'selected' : '' }}>Semi-mount (no center)
+                                                {{ $product->finishLevel == 'Semi-mount (no center)' ? 'selected' : '' }}>
+                                                Semi-mount (no center)
                                             </option>
                                             <option value="Complete"
                                                 {{ $product->finishLevel == 'Complete' ? 'selected' : '' }}>Complete
@@ -455,7 +460,8 @@
                                                 {{ $product->FingerSize == '14 3/4' ? 'selected' : '' }}>
                                                 14 3/4</option>
 
-                                            <option value="15" {{ $product->FingerSize == '15' ? 'selected' : '' }}>15
+                                            <option value="15" {{ $product->FingerSize == '15' ? 'selected' : '' }}>
+                                                15
                                             </option>
                                             <option value="15 1/4"
                                                 {{ $product->FingerSize == '15 1/4' ? 'selected' : '' }}>
@@ -476,21 +482,18 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             Default Image</label>
-                                        <input class="form-control"  type="file"
-                                            name="default_image_url">
+                                        <input class="form-control" type="file" name="default_image_url">
                                     </div>
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             Default Image alt</label>
-                                        <input class="form-control"  type="text"
-                                            name="default_image_alt"
+                                        <input class="form-control" type="text" name="default_image_alt"
                                             value="{{ old('default_image_alt', $product->default_image_alt) }}">
                                     </div>
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label"><span>*</span>
                                             shippingDay</label>
-                                        <input class="form-control" name="shippingDay"
-                                            type="number" required=""
+                                        <input class="form-control" name="shippingDay" type="number" required=""
                                             value="{{ old('shippingDay', $product->shippingDay) }}">
                                     </div>
                                     <div class="form-group">
@@ -533,8 +536,7 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label">
                                             Meta Title</label>
-                                        <input class="form-control" name="meta_title"
-                                            type="text"
+                                        <input class="form-control" name="meta_title" type="text"
                                             value="{{ !empty($product->meta_title) ? $product->meta_title : $product->name }}"
                                             placeholder="Meta Title">
                                     </div>
@@ -548,7 +550,8 @@
                                     <div class="form-group">
                                         <label for="validationCustom02" class="col-form-label">
                                             Meta Description</label>
-                                        <textarea placeholder="Meta Description" name="meta_description" class="form-control" cols="5" rows="5">{{ !empty($product->meta_description) ? $product->meta_description : $product->description }}</textarea>
+                                        <textarea placeholder="Meta Description" name="meta_description" class="form-control" cols="5"
+                                            rows="5">{{ !empty($product->meta_description) ? $product->meta_description : $product->description }}</textarea>
                                     </div>
                                     <!--meta data--->
 
@@ -690,7 +693,9 @@
                                                                     class="fa fa-edit"></i></a>
                                                         </td>
                                                         <td class="action">
-                                                            <a href="javascript:void(0)" onclick="deleteItem('{{ url('/remove/variant-product/') }}/{{ $variation['id'] }}')"><i class="fa fa-trash"></i></a>
+                                                            <a href="javascript:void(0)"
+                                                                onclick="deleteItem('{{ url('/remove/variant-product/') }}/{{ $variation['id'] }}')"><i
+                                                                    class="fa fa-trash"></i></a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -738,7 +743,7 @@
                                                     <td>{{ $items['sku'] }}</td>
                                                     <td><i class="fa fa-trash delete-similar-product"
                                                             data-product-id="{{ $items['id'] }}"></i>
-                                                        </td>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -819,6 +824,43 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="col-form-label">Product Price</h5>
+                                <a href="#" type="button" class="btn btn-small btn-outline-success"
+                                    data-bs-toggle="modal" data-bs-target="#addSimilarProductModal">Add Price</a>
+                            </div>
+                            <div class="card-body" id="similar-table">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Metal Type</th>
+                                                <th scope="col">Metal Color</th>
+                                                <th scope="col">Diamond Quality</th>
+                                                <th scope="col">Finish Level</th>
+                                                <th scope="col">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($product_prices as $product_price)
+                                            <tr>
+                                                <th scope="row">{{ $product_price->metalType }}</th>
+                                                <td>{{ $product_price->metalColor }}</td>
+                                                <td>{{ $product_price->diamondQuality }}</td>
+                                                <td>{{ $product_price->finishLevel }}</td>
+                                                <td>${{ $product_price->price }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <a href="{{ route('admin.product.price',['id'=>$product['id']]) }}" class="btn btn-outline-primary mt-3">View All</a>
+                                </div>
+
+                            </div>
+                        </div>
+
 
                     </div>
                     <div class="digital-add needs-validation mb-3" style="display: flex;flex-direction: row-reverse;">
@@ -916,7 +958,8 @@
     <div class="modal fade" id="addVariantProductModal" tabindex="-1" aria-labelledby="addVariantProductModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <form action="{{ route('admin.product.variant',['base_product_id'=>$product['id']]) }}" method="POST" id="submit-variant">
+            <form action="{{ route('admin.product.variant', ['base_product_id' => $product['id']]) }}" method="POST"
+                id="submit-variant">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
@@ -974,7 +1017,7 @@
         <script>
             $("#similar-menu").change(function() {
                 var menuid = $("#similar-menu").val();
-                var url = "{{ route('filter.category',['id'=>':menuid']) }}";
+                var url = "{{ route('filter.category', ['id' => ':menuid']) }}";
                 url = url.replace(':menuid', menuid);
                 $("#similar-category").load(url);
             });
@@ -1110,7 +1153,7 @@
             // added new script for change manu category and subcategory
             $("#product-menu").change(function() {
                 var menuid = $("#product-menu").val();
-                var url = "{{ route('filter.category',['id'=>':menuid']) }}";
+                var url = "{{ route('filter.category', ['id' => ':menuid']) }}";
                 url = url.replace(':menuid', menuid);
                 $("#product-category").load(url);
             });
@@ -1129,7 +1172,7 @@
             // show product for variant
             $("#variant-menu").change(function() {
                 var menuid = $("#variant-menu").val();
-                var url = "{{ route('filter.category',['id'=>':menuid']) }}";
+                var url = "{{ route('filter.category', ['id' => ':menuid']) }}";
                 url = url.replace(':menuid', menuid);
                 $("#variant-category").load(url);
             });
@@ -1187,7 +1230,7 @@
 
                 $('#category_id').change(function() {
                     var categoryId = $(this).val();
-                    var url = "{{ route('admin.getsubcategories',['category_id'=>':categoryId']) }}";
+                    var url = "{{ route('admin.getsubcategories', ['category_id' => ':categoryId']) }}";
                     url = url.replace(':categoryId', categoryId);
                     $.ajax({
                         url: url,
@@ -1212,7 +1255,7 @@
                                 $('#subcategory_ids').trigger('change');
                             } else {
                                 console.error('Invalid data format received:',
-                                data); // Handle invalid data format
+                                    data); // Handle invalid data format
                             }
                         },
                         error: function() {
