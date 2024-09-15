@@ -66,15 +66,38 @@ class ProductController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $price = new ProductPrice;
-        $price->product_sku = $request->product_sku;
-        $price->metalType = $request->metalType;
-        $price->metalColor = $request->metalColor;
-        $price->diamondQuality = $request->diamondQuality;
-        $price->diamond_type = $request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown';
-        $price->finishLevel = $request->finishLevel;
-        $price->save();
-        return redirect()->back()->with('success', 'Price added successfully');
+        $whereData = [
+            'product_sku'=>$request->product_sku,
+            'metalType'=>$request->metalType,
+            'metalColor'=>$request->metalColor,
+            'diamondQuality'=>$request->diamondQuality,
+            'diamond_type'=>$request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown',
+            'finishLevel'=>$request->finishLevel,
+        ];
+
+        $query = ProductPrice::where($whereData);
+        if($query->exists()){
+            return redirect()->back()->withErrors(['combination' => 'This product price combination already exists.'])->withInput();
+        }
+        // save the data
+        ProductPrice::create([
+            'product_sku' => $request->product_sku,
+            'metalType' => $request->metalType,
+            'metalColor' => $request->metalColor,
+            'diamondQuality' => $request->diamondQuality,
+            'diamond_type' => $request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown',
+            'finishLevel' => $request->finishLevel,
+        ]);
+        return redirect()->back()->with('success', 'Product price added successfully.');
+        // $price = new ProductPrice;
+        // $price->product_sku = $request->product_sku;
+        // $price->metalType = $request->metalType;
+        // $price->metalColor = $request->metalColor;
+        // $price->diamondQuality = $request->diamondQuality;
+        // $price->diamond_type = $request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown';
+        // $price->finishLevel = $request->finishLevel;
+        // $price->save();
+        // return redirect()->back()->with('success', 'Price added successfully');
     }
 
     public function productPrices($id)
