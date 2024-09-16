@@ -19,7 +19,7 @@
                                     <i data-feather="home"></i>
                                 </a>
                             </li>
-                            <li class="breadcrumb-item">Product</li>
+                            <li class="breadcrumb-item"><a href="{{ $backtrack }}">Products</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div>

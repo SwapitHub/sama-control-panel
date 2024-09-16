@@ -110,6 +110,7 @@ class ProductController extends Controller
             $pricelists = ProductPrice::orderBy('id', 'desc')->where('product_sku', $product['sku'])->get();
             $data = [
                 'title' => 'Product Price List',
+                'backtrack' => route('admin.product.dblist'),
                 'product' => $product,
                 'prices' => $pricelists,
             ];
