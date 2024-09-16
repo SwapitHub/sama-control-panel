@@ -161,6 +161,10 @@
                                         @error('price')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+                                        @error('combination')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary d-block">Save</button>
