@@ -87,6 +87,7 @@ class ProductController extends Controller
             'diamondQuality' => $request->diamondQuality,
             'diamond_type' => $request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown',
             'finishLevel' => $request->finishLevel,
+            'price' => $request->price,
         ]);
         return redirect()->back()->with('success', 'Product price added successfully.');
         // $price = new ProductPrice;
