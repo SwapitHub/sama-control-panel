@@ -88,7 +88,7 @@
                                     <label for="menuname" class="col-xl-3 col-md-4"><span>*</span> Metal
                                         Type</label>
                                     <div class="col-md-8">
-                                        <select name="metalType" id="" class="form-control">
+                                        <select name="metalType" required class="form-control">
                                             <option selected disabled>--select--</option>
                                             <option value="18kt" {{ old('metalType') == '18kt' ? 'selected' : '' }}>18kt
                                             </option>
@@ -103,7 +103,7 @@
                                 <div class="form-group row">
                                     <label for="slug" class="col-xl-3 col-md-4"><span>*</span> Metal Color</label>
                                     <div class="col-md-8">
-                                        <select name="metalColor" id="" class="form-control">
+                                        <select name="metalColor" required class="form-control">
                                             <option selected disabled>--select--</option>
                                             <option value="White" {{ old('metalColor') == 'White' ? 'selected' : '' }}>
                                                 White</option>
@@ -120,7 +120,7 @@
                                 <div class="form-group row">
                                     <label for="slug" class="col-xl-3 col-md-4"><span>*</span> Diamond Quality</label>
                                     <div class="col-md-8">
-                                        <select name="diamondQuality" id="" class="form-control">
+                                        <select name="diamondQuality" required class="form-control">
                                             <option selected disabled>--select--</option>
                                             <option value="SI1, G"
                                                 {{ old('diamondQuality') == 'SI1, G' ? 'selected' : '' }}>SI1, G</option>
@@ -136,7 +136,7 @@
                                 <div class="form-group row">
                                     <label for="slug" class="col-xl-3 col-md-4"><span>*</span> Finish Level</label>
                                     <div class="col-md-8">
-                                        <select name="finishLevel" id="" class="form-control">
+                                        <select name="finishLevel" required class="form-control">
                                             <option selected disabled>--select--</option>
                                             <option value="Semi-mount"
                                                 {{ old('finishLevel') == 'Semi-mount' ? 'selected' : '' }}>Semi-mount
@@ -179,7 +179,7 @@
                                         <table class="table all-package order-datatable" id="">
                                             <thead>
                                                 <tr>
-                                                    <th>SR</th>
+                                                    {{-- <th>SR</th> --}}
                                                     <th>Metal Type</th>
                                                     <th>Metal Color</th>
                                                     <th>Diamond Quality</th>
@@ -195,13 +195,13 @@
                                                 <?php $i = 1; ?>
                                                 @foreach ($prices as $index => $item)
                                                     <tr>
-                                                        <td data-field="text">{{ $index + 1 }}</td>
+                                                        {{-- <td data-field="text">{{ $index + 1 }}</td> --}}
                                                         {{-- <td data-field="text">{{ $item->id }}</td> --}}
                                                         <td data-field="text">{{ $item->metalType }} </td>
                                                         <td data-field="text">{{ $item->metalColor }}</td>
                                                         <td data-field="text">{{ $item->diamondQuality }}</td>
                                                         <td data-field="text">{{ $item->finishLevel }}</td>
-                                                        <td data-field="text">{{ $item->diamond_type }}</td>
+                                                        <td data-field="text">{{ $item->diamond_type == 'natural'?'Natural':'Lab grown'; }}</td>
                                                         <td data-field="text">${{ $item->reference_price ?? 0 }}</td>
                                                         <td data-field="text">{{ $item->discount_percentage ?? 0 }}%</td>
                                                         <td data-field="text">${{ $item->price ?? 0 }}</td>

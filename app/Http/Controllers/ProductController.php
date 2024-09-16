@@ -51,6 +51,7 @@ class ProductController extends Controller
             'metalColor' => 'required',
             'diamondQuality' => 'required',
             'finishLevel' => 'required',
+            'price' => 'required',
         ];
         $messages = [
             'product_sku' => 'The Product sku field required.',
@@ -58,6 +59,7 @@ class ProductController extends Controller
             'metalColor.unique' => 'The metal color is required.',
             'diamondQuality.unique' => 'The diamond quality is required.',
             'finishLevel.unique' => 'The finish level is required.',
+            'price' => 'The price is required.',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
