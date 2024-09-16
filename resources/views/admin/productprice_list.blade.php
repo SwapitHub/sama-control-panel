@@ -242,7 +242,7 @@
                          <div class="form-group">
                             <label for="Price">Price</label>
                             <input type="number" name="price" class="form-control" id="priceProduct">
-                            <input type="text" class="form-control" id="id">
+                            <input type="hidden" class="form-control" id="id">
                          </div>
                     </div>
                     <div class="modal-footer">
