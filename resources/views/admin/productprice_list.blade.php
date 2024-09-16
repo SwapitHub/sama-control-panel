@@ -155,7 +155,7 @@
 
                                 <div class="form-group row">
                                     <label for="image" class="col-xl-3 col-md-4"><span>*</span>
-                                        price</label>
+                                        Price</label>
                                     <div class="col-md-8">
                                         <input class="form-control" id="price" name="price" type="number" required>
                                         @error('price')
