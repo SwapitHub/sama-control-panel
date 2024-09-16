@@ -113,6 +113,15 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
+                                        <label for="validationCustomtitle" class="col-form-label pt-0"><span>*</span>
+                                            Fractionsemimount</label>
+                                        <input class="form-control" id="validationCustomtitle"
+                                            value="{{ old('fractionsemimount', $product['fractionsemimount']) }}" type="text">
+                                        @error('fractionsemimount')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
                                         <label for="validationCustomtitle" class="col-form-label pt-0"> Slug</label>
                                         <input class="form-control" id="validationCustomtitle" type="text"
                                             placeholder="{{ $product['slug'] }}">
