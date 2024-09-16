@@ -224,7 +224,7 @@
                     <div class="sidebar-user">
                         <a href="{{ route('admin.dashboard') }}">
                             @if (!empty(Auth::user()->designation_icon))
-                                <img class="img-60"
+                                <img class="img-60 bg-white"
                                     src=" {{ env('AWS_URL') }}public/storage/{{ Auth::user()->designation_icon }}"
                                     alt="{{ Auth::user()->name }}">
                         </a>
