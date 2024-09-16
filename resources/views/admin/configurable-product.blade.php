@@ -849,7 +849,7 @@
                                                 <td>{{ $product_price->metalColor }}</td>
                                                 <td>{{ $product_price->diamondQuality }}</td>
                                                 <td>{{ $product_price->finishLevel }}</td>
-                                                <td>${{ $product_price->price }}</td>
+                                                <td>${{ $product_price->price??0 }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
