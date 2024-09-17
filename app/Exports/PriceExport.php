@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldQueue as LaravelShouldQueue;
+use Illuminate\Support\Facades\DB;
 
 class PriceExport implements FromQuery, WithHeadings, WithChunkReading, ShouldAutoSize
 {
@@ -27,12 +28,16 @@ class PriceExport implements FromQuery, WithHeadings, WithChunkReading, ShouldAu
                 'product_price.reference_price',
                 'product_price.discount_percentage',
                 'product_price.price',
+                // 'products.parent_sku as parent_sku',
+                DB::raw('COALESCE(products.parent_sku, products.sku) as sku_to_use'),
+                'products.internal_sku as samasku',
+                'products.fractionsemimount as fractionsemimount',
                 'menus.name as menu_name'
             ])
             ->join('products', 'products.sku', '=', 'product_price.product_sku', 'inner')
             ->join('menus', 'menus.id', '=', 'products.menu', 'inner')
             ->where('product_price.reference_price', '!=', NULL)
-            ->orderBy('product_price.product_sku');
+            ->orderByRaw('CAST(product_price.product_sku AS UNSIGNED)');
     }
 
     public function headings(): array
@@ -49,6 +54,9 @@ class PriceExport implements FromQuery, WithHeadings, WithChunkReading, ShouldAu
             'reference_price',
             'discount_percentage',
             'price',
+            'parent_sku',
+            'samaSku',
+            'fractionsemimount',
             'category'
         ];
         return $columns;
