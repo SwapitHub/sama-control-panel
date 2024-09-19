@@ -107,6 +107,8 @@ class ProductImport implements ToCollection, WithHeadingRow
                 }
                 $input['images'] = json_encode($images) ?? null;
                 $input['videos'] = isset($input['videos']) ? $this->sortVideos($input['videos']) : null;
+                $input['internal_sku'] = $this->convertToSamaSku(['sku' => $input['sku'], 'fractionsemimount' => $input['fractionsemimount']]);
+
                 $generateSlug = new ProductModel;
                 $input['slug'] = $generateSlug->generateUniqueSlug(!empty($input['product_browse_pg_name']) ? $input['product_browse_pg_name'] : $input['name']);
 
@@ -238,5 +240,25 @@ class ProductImport implements ToCollection, WithHeadingRow
         } else {
             return null;
         }
+    }
+
+    ## convert Overmounting sku to sama sku
+    public function convertToSamaSku($overmountingData)
+    {
+        $sku = $overmountingData['sku'];
+        $fractionsemimount = $overmountingData['fractionsemimount'];
+        if (is_null($fractionsemimount) || empty($fractionsemimount)) {
+            $fractionsemimount = '000';
+        } else {
+            $mount = explode(' ', $fractionsemimount);
+            $mount0 = isset($mount[0]) ? $mount[0] : '';
+            $mount1 = isset($mount[1]) ? $mount[1] : '';
+            $totalMount = explode('/', $mount0);
+            $totalMount0 = isset($totalMount[0]) ? $totalMount[0] : '';
+            $totalMount1 = isset($totalMount[1]) ? $totalMount[1] : '';
+            $fractionsemimount = $totalMount0 . ($totalMount1 ? $totalMount1 : '');
+        }
+        $internal_sku = "SA" . str_replace('/', '', $sku) . '-' . $fractionsemimount;
+        return $internal_sku;
     }
 }

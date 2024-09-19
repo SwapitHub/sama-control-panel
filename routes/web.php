@@ -152,7 +152,7 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     // Route::post('/customer/add',[App\Http\Controllers\CustomerController::class, 'postCreate'])->name('admin.addcustomer');
     // Route::get('/customer/edit/{id}',[App\Http\Controllers\CustomerController::class, 'editCustomer'])->name('admin.editcustomer');
     // Route::post('/customer/{id}',[App\Http\Controllers\CustomerController::class, 'postEdit'])->name('admin.updatecustomer');
-    Route::get('/deletecustomermsg/{id}', [App\Http\Controllers\CustomerController::class, 'deleteCustomerMsg']);
+    Route::get('/deletecustomermsg/{id}', [App\Http\Controllers\CustomerController::class, 'deleteCustomerMsg'])->name('admin.deletemsg');
 
     Route::get('/country', [App\Http\Controllers\CountryController::class, 'index'])->name('admin.country');
     Route::get('/country/add', [App\Http\Controllers\CountryController::class, 'create'])->name('admin.countryadd');
