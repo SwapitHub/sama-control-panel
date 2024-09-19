@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\EmailTemplate;
 use App\Library\Clover;
+use App\Models\Settings;
 
 class EmailTemplateController extends Controller
 {
@@ -15,6 +16,7 @@ class EmailTemplateController extends Controller
             "viewurl" => 'template.add',
             "editurl" => 'template.edit',
             'list' => EmailTemplate::orderBy('id', 'desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.email_template_list', $data);
     }

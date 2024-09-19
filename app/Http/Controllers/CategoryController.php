@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\Settings;
 
 class CategoryController extends Controller
 {
@@ -29,8 +30,9 @@ class CategoryController extends Controller
 			->select('categories.*', 'menus.name as menu_name')
 			->paginate(10);
 		}
-		
+
 		$data['categories'] = $categoryWithMenu;
+		$data['prifix'] = Settings::first()->route_web_prifix;
 		return view('admin.catList', $data);
 	}
 

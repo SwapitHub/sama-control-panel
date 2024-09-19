@@ -8,6 +8,7 @@ use App\Models\TransactionModel;
 use App\Models\InvoiceModel;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Settings;
 use App\Models\AddresModel;
 use App\Models\OrderStatus;
 use App\Models\RefundModel;
@@ -48,6 +49,7 @@ class OrderController extends Controller
             "viewurl" => 'order.status.add',
             "editurl" => 'order.status.edit',
             'list' => OrderStatus::orderBy('id', 'desc')->where('status', 'true')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.order_status', $data);
     }

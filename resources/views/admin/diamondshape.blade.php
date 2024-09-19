@@ -15,7 +15,7 @@
 				<div class="col-lg-6">
 					<ol class="breadcrumb pull-right">
 						<li class="breadcrumb-item">
-							<a href="{{ url('admin/dashboard') }}">
+							<a href="{{ route('admin.dashboard') }}">
 								<i data-feather="home"></i>
 							</a>
 						</li>
@@ -58,7 +58,7 @@
 
 								<tbody>
 									@foreach($shapeList as $item)
-									<tr><input type="hidden" value="{{ url('deleteshape') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/deleteshape') }}" name="url" id="url"></tr>
 									<tr data-row-id="{{ $item->id }}">
 										<td>
 											<input class="checkbox_animated check-it" type="checkbox"

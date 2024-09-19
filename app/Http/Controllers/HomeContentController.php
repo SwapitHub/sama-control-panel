@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\HomeContent;
+use App\Models\Settings;
 use App\Models\Banner;
 use App\Models\HomeSection1;
 use App\Models\HomeSection2;
@@ -410,6 +411,7 @@ class HomeContentController extends Controller
             "viewurl" => 'admin.shopbycat.view',
             "editurl" => 'admin.shopbycat.edit',
             'list' => ShopByCategoryHomePage::orderBy('id', 'desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.shop_by_cat_homeList', $data);
     }

@@ -10,6 +10,7 @@
 	use App\Models\BlogCatModel;
 	use App\Models\BlogTypeModel;
 	use App\Models\BlogModel;
+	use App\Models\Settings;
 
 
 	class BlogController extends Controller
@@ -30,6 +31,7 @@
 			"viewurl" => 'admin.blog.add',
 			"editurl" =>'admin.blog.edit',
 			'list'=> $this->blogs,
+            'prifix' => Settings::first()->route_web_prifix,
 			];
 			return view('admin.blog_list',$data);
 

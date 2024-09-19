@@ -27,17 +27,17 @@
 			</div>
 		</div>
 		<!-- Container-fluid Ends-->
-		
+
 		<!-- Container-fluid starts-->
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-header">
-							
+
 							{{-- <a href="{{ $viewurl }}" class="btn btn-primary mt-md-0 mt-2">Add new</a> --}}
 						</div>
-						
+
 						<div class="card-body">
 							<div class="table-responsive table-desi">
 								<table class="all-package coupon-table table table-striped">
@@ -53,19 +53,19 @@
 											<th>Phone</th>
 											<th>Message</th>
 											<th>Status</th>
-											
+
 										</tr>
 									</thead>
-									
+
 									 <tbody>
-									<tr><input type="hidden" value="{{ url('deletecustomermsg') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/deletecustomermsg') }}" name="url" id="url"></tr>
 										@foreach($list as $item)
 										<tr data-row-id="{{ $item->id }}">
 											<td>
 												<input class="checkbox_animated check-it" type="checkbox"
 												value="" id="flexCheckDefault" data-id="{{ $item->id }}">
 											</td>
-											
+
 											<td>{{ $item->first_name }} </td>
 											<td>{{ $item->last_name }} </td>
 											<td>{{ $item->email }}</td>
@@ -74,10 +74,10 @@
 											<td >
 												<span class="badge badge-{{ ($item->status =='true')?'success':'primary' }}">{{ ($item->status =='true')?'Active':'Inactive' }}</span>
 											</td>
-                                           
+
 										</tr>
 										@endforeach
-									</tbody> 
+									</tbody>
 								</table>
 							</div>
 							<div class="dataTables_paginate paging_simple_numbers d-flex justify-content-between align-items-center">
@@ -96,4 +96,3 @@
 		<!-- Container-fluid Ends-->
 	</div>
 	@endsection
-	

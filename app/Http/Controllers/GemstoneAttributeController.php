@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\gemstoneModel;
 use App\Models\gemstoneShapeModel;
 use App\Models\gemstoneColorModel;
+use App\Models\Settings;
 
 class GemstoneAttributeController extends Controller
 {
@@ -18,6 +19,7 @@ class GemstoneAttributeController extends Controller
             "viewurl" => 'admin.gemstone.add',
             "editurl" => 'admin.gemstone.edit',
             'list' => gemstoneModel::orderBy('id', 'desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.gemstoneList', $data);
     }
@@ -134,6 +136,7 @@ class GemstoneAttributeController extends Controller
             "viewurl" => 'admin.shape.add',
             "editurl" => 'admin.shape.edit',
             'list' => gemstoneShapeModel::orderBy('id', 'desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.stoneshapeList', $data);
     }
@@ -250,6 +253,7 @@ class GemstoneAttributeController extends Controller
             "viewurl" => 'admin.color.add',
             "editurl" => 'admin.color.edit',
             'list' => gemstoneColorModel::orderBy('id', 'desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.stonecolorList', $data);
     }

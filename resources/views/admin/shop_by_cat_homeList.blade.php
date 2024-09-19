@@ -58,7 +58,7 @@
 									</thead>
 
 									 <tbody>
-									<tr><input type="hidden" value="{{ url('admin/deletemetal') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/deletemetal') }}" name="url" id="url"></tr>
 										@foreach($list as $item)
 										<tr data-row-id="{{ $item->id }}">
 											<td>

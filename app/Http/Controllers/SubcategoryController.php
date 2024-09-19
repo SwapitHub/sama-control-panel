@@ -7,6 +7,7 @@
 	use Illuminate\Support\Facades\Storage;
 	use Illuminate\Support\Facades\Validator;
 	use App\Models\Category;
+	use App\Models\Settings;
 	use App\Models\Subcategory;
 	use App\Models\Menu;
 
@@ -38,6 +39,7 @@
 			// Append the filter parameter to pagination links
 			$subCategoryWithMenu->appends(['filter' => $request->filter]);
 			$data['subcategories'] = $subCategoryWithMenu;
+            $data['prifix'] = Settings::first()->route_web_prifix;
 			return view('admin.subcategories',$data);
 		}
 

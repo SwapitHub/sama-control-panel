@@ -1,10 +1,11 @@
 <?php
-	
+
 	namespace App\Http\Controllers;
 	use Illuminate\Http\Request;
 	use Illuminate\Support\Facades\Validator;
 	use App\Models\Carat;
-	
+	use App\Models\Settings;
+
 	class CaratController extends Controller
 	{
 		public function index()
@@ -14,10 +15,11 @@
 			"viewurl" => 'admin.addcarat',
 			"editurl" =>'admin.editcarat',
 			'list'=> Carat::orderBy('id','desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
 			];
 			return view('admin.caratList',$data);
 		}
-		
+
 		public function addCarat()
 		{
 			$data = [
@@ -26,9 +28,9 @@
 			'title'=>'Add carat',
 			"obj"=>'',
 			];
-			return view('admin.carat',$data);		
+			return view('admin.carat',$data);
 		}
-		
+
 		public function postAddCarat(Request $request)
 		{
 		  	$this->validate($request, [
@@ -40,9 +42,9 @@
 			$carat->carat = $request->carat;
 			$carat->status = $request->status ?? 'false';
 			$carat->save();
-			return redirect()->back()->with('success', 'Diamond carat added successfully');	
+			return redirect()->back()->with('success', 'Diamond carat added successfully');
 		}
-		
+
 		public function editCarat($id)
 		{
 			$editdata = Carat::find($id);
@@ -58,7 +60,7 @@
 			];
 			return view('admin.carat',$data);
 		}
-		
+
 		public function PostEditCarat(Request $request , $id)
 		{
 			$obj = Carat::find($id);
@@ -72,7 +74,7 @@
 			$obj->save();
 			return redirect()->back()->with('success', 'Diamond carat updated successfully');
 		}
-		
+
 		public function deleteCarat($id)
 		{
 		  if ($id) {
@@ -84,9 +86,9 @@
 				$output['res'] = 'error';
 				$output['msg'] = 'Carat Id Required';
 			}
-			echo json_encode($output);	
+			echo json_encode($output);
 		}
 	}
-	
-	
-	
+
+
+

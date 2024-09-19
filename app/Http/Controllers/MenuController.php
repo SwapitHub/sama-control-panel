@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Menu;
+use App\Models\Settings;
 
 class MenuController extends Controller
 {
     public function index()
     {
         $data['menus'] = Menu::orderBy('id', 'desc')->paginate(10);
+        $data['prifix'] = Settings::first()->route_web_prifix;
         return view('admin/menuList', $data);
     }
 

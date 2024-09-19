@@ -8,12 +8,14 @@
 	use Illuminate\Support\Facades\Validator;
 	use App\Models\DiamondShape;
 	use App\Models\DiamondModel;
+	use App\Models\Settings;
 
 	class DiamondController extends Controller
 	{
 		public function index()
 		{
 		    $data['shapeList'] = DiamondShape::orderBy('id','desc')->paginate(10);
+            $data['prifix'] = Settings::first()->route_web_prifix;
 			return view('admin.diamondshape',$data);
 		}
 

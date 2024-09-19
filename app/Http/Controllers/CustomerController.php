@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ContactUs;
 use App\Models\AddresModel;
 use App\Models\OrderModel;
+use App\Models\Settings;
 use App\Models\TransactionModel;
 use Illuminate\Validation\Rule;
 use App\Mail\UserVerification;
@@ -50,7 +51,8 @@ class CustomerController extends Controller
             'title' => 'Customer list',
             'viewurl' => route('admin.customeradd'),
             'editurl' => 'admin.editcustomer',
-            'list' => $users
+            'list' => $users,
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         $users->appends(['filter' => $request->filter]);
         return view('admin.customerList', $data);
@@ -193,6 +195,7 @@ class CustomerController extends Controller
             'title' => "Customer's Message list",
             'viewurl' => '',
             'editurl' => 'admin.editcustomer',
+            'prifix' => Settings::first()->route_web_prifix,
             'list' => ContactUs::orderBy('id', 'desc')->where('type', 'general')->paginate(10),
         ];
         return view('admin.contact_list', $data);

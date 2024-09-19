@@ -1,13 +1,14 @@
 <?php
-	
+
 	namespace App\Http\Controllers;
-	
+
 	use Illuminate\Http\Request;
 	use Illuminate\Support\Facades\File;
 	use Illuminate\Support\Facades\Storage;
 	use Illuminate\Support\Facades\Validator;
 	use App\Models\RingMetal;
 	use App\Models\MetalColor;
+	use App\Models\Settings;
 	class RingMetalController extends Controller
 	{
 		//
@@ -18,11 +19,12 @@
 			"viewurl" => 'admin.addringmetal',
 			"editurl" =>'admin.editringmetal',
 			'list'=> RingMetal::orderBy('id','desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
 			];
-			return view('admin.metalList',$data);	
-			
+			return view('admin.metalList',$data);
+
 		}
-		
+
 		public function ringmetal()
 		{	$data = [
 			'url_action' => route('admin.createringmetal'),
@@ -30,10 +32,10 @@
 			'title'=>'Add Ring Metal',
 			"obj"=>'',
 			];
-			return view('admin.ringmetal',$data);	
-			
+			return view('admin.ringmetal',$data);
+
 		}
-		
+
 		public function createMetal(Request $request)
 		{
 			$this->validate($request, [
@@ -46,7 +48,7 @@
             'image.mimes' => 'The image must be a JPEG, PNG, JPG, WEBP or GIF file.',
             'image.max' => 'The image size must not exceed 5 MB.',
 			]);
-			
+
 			if ($request->file('image') != NULL) {
 				$extension = $request->file('image')->getClientOriginalExtension();
 				$fileName = "ring_style_" . time() . '.' . $extension;
@@ -64,7 +66,7 @@
 			$ring->save();
 			return redirect()->back()->with('success', 'Ring metal added successfully');
 		}
-		
+
 		public function editMetal($id)
 		{
 			$editdata = RingMetal::find($id);
@@ -80,7 +82,7 @@
 			];
 			return view('admin.ringmetal',$data);
 		}
-		
+
 		public function postEdit(Request $request,$id)
 		{
             $obj = RingMetal::find($id);
@@ -89,8 +91,8 @@
 			], [
             'title.required' => 'The shape field is required.',
 			]);
-			
-			if ($request->file('image') != NULL) { 
+
+			if ($request->file('image') != NULL) {
 				$oldImagePath = 'public/' . $obj->icon; // Replace with the actual path
 				if (Storage::exists($oldImagePath)) {
 					Storage::delete($oldImagePath);
@@ -104,7 +106,7 @@
 			{
 			   	$imagepath = $obj->icon;
 			}
-			
+
 			if($request->slug)
 			{
 			   	$slug = $obj->generateUniqueSlug($request->slug);
@@ -113,7 +115,7 @@
 			{
 				$slug = $obj->slug;
 			}
-			
+
 			$obj->metal = $request->title;
 			$obj->slug = $slug;
 			$obj->order_number = $request->order_number;
@@ -122,7 +124,7 @@
 			$obj->save();
 			return redirect()->back()->with('success', 'Ring metal updated successfully');
 		}
-		
+
 		public function deleteMetal($id)
 		{
 			if ($id) {
@@ -140,9 +142,9 @@
 			}
 			echo json_encode($output);
 		}
-		
+
 		########## ring metal color ##############
-		
+
 		public function metalColorList()
 		{
 			$data = [
@@ -150,10 +152,11 @@
 			"viewurl" => 'admin.metalcolor.view',
 			"editurl" =>'admin.metalcolor.edit',
 			'list'=> MetalColor::orderBy('id','desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
 			];
-			return view('admin.metalcolorList',$data);	
+			return view('admin.metalcolorList',$data);
 		}
-		
+
 		public function createColor()
 		{
 			$data = [
@@ -162,9 +165,9 @@
 			'title'=>'Add Metal color',
 			"obj"=>'',
 			];
-			return view('admin.metalcolor',$data);	
+			return view('admin.metalcolor',$data);
 		}
-		
+
 		public function postcreateColor(Request $request)
 		{
 		// dd($request->all());
@@ -175,8 +178,8 @@
             'name.required' => 'The Name field is required.',
             'color.required' => 'The Color field is required.'
 			]);
-			
-			
+
+
 			$MetalColor = new MetalColor;
 			$MetalColor->name = $request->name;
 			$MetalColor->color = $request->color;
@@ -186,7 +189,7 @@
 			$MetalColor->save();
 			return redirect()->back()->with('success', 'Metal color added successfully');
 		}
-		
+
 		public function editMetalColor($id)
 		{
 			$editdata = MetalColor::find($id);
@@ -202,7 +205,7 @@
 			];
 			return view('admin.metalcolor',$data);
 		}
-		
+
 		public function postEditMetalColor(Request $request ,$id)
 		{
 			$obj = MetalColor::find($id);
@@ -211,7 +214,7 @@
 			], [
             'name.required' => 'The name field is required.',
 			]);
-			
+
 			$obj->name = $request->name;
 			$obj->color = $request->color;
 			$obj->value = $request->value;
@@ -220,8 +223,8 @@
 			$obj->save();
 			return redirect()->back()->with('success', 'Ring metal color updated successfully');
 		}
-		
-		
+
+
 		public function deleteMetalColor($id)
 		{
 			if ($id) {
@@ -235,10 +238,10 @@
 			}
 			echo json_encode($output);
 		}
-		
-		
-		
-		
+
+
+
+
 		########## ring metal color ##############
-		
+
 	}

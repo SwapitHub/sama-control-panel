@@ -15,7 +15,7 @@
 					<div class="col-lg-6">
 						<ol class="breadcrumb pull-right">
 							<li class="breadcrumb-item">
-								<a href="index.html">
+								<a href="{{ route('admin.dashboard') }}">
 									<i data-feather="home"></i>
 								</a>
 							</li>
@@ -56,7 +56,7 @@
 									</thead>
 
 									 <tbody>
-									<tr><input type="hidden" value="{{ url('gemstones/delete') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/gemstones/delete') }}" name="url" id="url"></tr>
 										@foreach($list as $item)
 										<tr data-row-id="{{ $item->id }}">
 											<td>

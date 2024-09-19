@@ -7,6 +7,7 @@
 	use App\Models\FaqCategory;
 	use App\Models\Faq;
 	use App\Models\Widget;
+	use App\Models\Settings;
 
 	class FaqController extends Controller
 	{
@@ -23,7 +24,8 @@
 			"title"=>'Faqs',
 			"viewurl" => 'admin.addfaq',
 			"editurl" =>'admin.editfaq',
-			'list'=> $faqWithCategory
+			'list'=> $faqWithCategory,
+            'prifix' => Settings::first()->route_web_prifix,
 			];
 			return view('admin.faq',$data);
 		}
@@ -48,6 +50,7 @@
 			"viewurl" => 'admin.addfaqcategories',
 			"editurl" =>'admin.editfaqcategories',
 			'list'=> FaqCategory::orderBy('id','desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
 			];
 			return view('admin.faqcategory',$data);
 		}

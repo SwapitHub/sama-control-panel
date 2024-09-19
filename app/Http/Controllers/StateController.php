@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\State;
 use App\Models\Country;
+use App\Models\Settings;
 
 class StateController extends Controller
 {
@@ -18,7 +19,8 @@ class StateController extends Controller
             'title' => 'State list',
             'viewurl' => route('admin.addstate'),
             'editurl' => 'admin.editstate',
-            'list' => $state
+            'list' => $state,
+            'prifix' => Settings::first()->route_web_prifix,
         ];
         return view('admin.stateList', $data);
     }

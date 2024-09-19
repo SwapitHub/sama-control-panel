@@ -27,7 +27,7 @@
 		</div>
 	</div>
 	<!-- Container-fluid Ends-->
-	
+
 	<!-- Container-fluid starts-->
 	<div class="container-fluid">
 		<div class="row">
@@ -42,7 +42,7 @@
 							<button class="btn btn-primary" type="search">Search</button>
 						</form>
 					</div>
-					
+
 					<div class="card-body">
 						<div class="table-responsive table-desi">
 							<table class="table all-package table-category " id="editableTable">
@@ -59,30 +59,30 @@
 										<th>Option</th>
 									</tr>
 								</thead>
-								
+
 								<tbody>
 									@foreach($categories as $item)
-									<tr><input type="hidden" value="{{ url('deletecategory') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/deletecategory') }}" name="url" id="url"></tr>
 									<tr data-row-id="{{ $item->id }}">
 										<td>
 											<input class="checkbox_animated check-it" type="checkbox"
 											value="" id="flexCheckDefault" data-id="{{ $item->id }}">
 										</td>
 										<td data-field="name">{{ $item->name }}</td>
-										
+
 										<td data-field="price">{{ $item->slug }}</td>
-										
+
 										<td class="" data-field="status">
 											<span class="badge badge-{{ ($item->status =='true')?'success':'primary' }}">{{ ($item->status =='true')?'Active':'Inactive' }}</span>
 										</td>
-										
+
 										<td data-field="name">{{ $item->menu_name }}</td>
-										
+
 										<td>
 											<a href="{{ route('admin.editcategory',['id'=>$item->id]) }}">
 												<i class="fa fa-edit" title="Edit"></i>
 											</a>
-											
+
 											<a href="javascript:void(0)" onclick="deleteItem('{{ url('admin/deletecategory') }}/{{ $item->id }}')">
 												<i class="fa fa-trash" title="Delete"></i>
 											</a>
@@ -90,7 +90,7 @@
 									</tr>
 									@endforeach
 								</tbody>
-								
+
 							</table>
 							<div class="dataTables_paginate paging_simple_numbers d-flex justify-content-between align-items-center">
 								<div>

@@ -64,7 +64,7 @@
 									</thead>
 
 									<tbody>
-									<tr><input type="hidden" value="{{ url('deletesubcat') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/deletesubcat') }}" name="url" id="url"></tr>
 										@foreach($subcategories as $item)
 										<tr data-row-id="{{ $item->id }}">
 											<td>

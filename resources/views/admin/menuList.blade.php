@@ -27,17 +27,17 @@
 		</div>
 	</div>
 	<!-- Container-fluid Ends-->
-	
+
 	<!-- Container-fluid starts-->
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="card">
 					<div class="card-header">
-						
+
 						<a href="{{ route('admin.createmenu') }}" class="btn btn-primary mt-md-0 mt-2">Create Menu</a>
 					</div>
-					
+
 					<div class="card-body">
 						<div class="table-responsive table-desi">
 							<table class="all-package coupon-table table table-striped">
@@ -53,32 +53,32 @@
 										<th>Status</th>
 										<!--th>Created On</th-->
 										<th>Options</th>
-										
+
 									</tr>
 								</thead>
-								
+
 								<tbody>
-									<tr><input type="hidden" value="{{ url('deletemenu') }}" name="url" id="url"></tr>
+									<tr><input type="hidden" value="{{ url($prifix.'/deletemenu') }}" name="url" id="url"></tr>
 									@foreach($menus as $item)
 									<tr data-row-id="{{ $item->id }}">
 										<td>
 											<input class="checkbox_animated check-it" type="checkbox"
 											value="" id="flexCheckDefault" data-id="{{ $item->id }}">
 										</td>
-										
+
 										<td>{{ $item->name }} <span data-bs-toggle="tooltip" data-bs-placement="top" title="Order" class="badge badge-dark">{{ $item->order_number }}</span></td>
 										<td>{{ $item->slug }}</td>
 										<!--td>{{ $item->order_number }}</td-->
-										
+
 										<td >
 											<span class="badge badge-{{ ($item->status =='true')?'success':'primary' }}">{{ ($item->status =='true')?'Active':'Inactive' }}</span>
 										</td>
-										
+
 										<!--td class="list-date">{{ $item->created_at }}</td-->
 										<td class="list-date">
 											<a href="{{ route('admin.editmenu', ['id' => $item->id]) }}">
 												<i class="fa fa-edit" title="Edit"></i>
-											</a>	
+											</a>
 										</td>
 									</tr>
 									@endforeach

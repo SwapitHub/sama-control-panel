@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Settings;
 
 class RoleController extends Controller
 {
@@ -16,13 +17,13 @@ class RoleController extends Controller
         foreach ($rolesData as $role) {
             // Split the comma-separated permission IDs
             $permissionIds = explode(',', $role->permissions);
-            
+
             // Fetch permission names for each permission ID
             $permissionNames = DB::table('permissions')
                 ->whereIn('id', $permissionIds)
                 ->pluck('name')
                 ->toArray();
-            
+
             // Concatenate permission names
             $role->permission_names = implode(', ', $permissionNames);
         }
@@ -31,11 +32,12 @@ class RoleController extends Controller
 			'title'=>'Role list',
 			'viewurl' =>route('admin.role.create'),
 			'editurl'=>'admin.role.edit',
-			'list'=> $rolesData
+			'list'=> $rolesData,
+            'prifix' => Settings::first()->route_web_prifix,
 		];
         return view('admin.role_list',$data);
     }
-    
+
     public function addRole()
     {
         $data = [
@@ -53,7 +55,7 @@ class RoleController extends Controller
         $role->name = $request->name;
         $role->permissions = implode(',',$request->permissions);
         $role->save();
-        return redirect()->back()->with('success', 'Role added');     
+        return redirect()->back()->with('success', 'Role added');
     }
 
     public function editRole($id)

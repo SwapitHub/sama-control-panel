@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Permission;
+use App\Models\Settings;
 // use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route;
 
@@ -11,12 +12,13 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        
+
         $data = [
 			'title'=>'Permission list',
 			'viewurl' =>route('admin.permission.create'),
 			'editurl'=>'admin.edit.permission',
 			'list'=> Permission::orderBy('id','desc')->paginate(10),
+            'prifix' => Settings::first()->route_web_prifix,
 		];
         return view('admin.permission_list',$data);
     }
@@ -34,7 +36,7 @@ class PermissionController extends Controller
                 'uri' => $route->uri(),
             ];
         });
-        
+
         $data = [
 		    'title'=>'Add New Permission',
 			'backtrack'=> 'admin.permission.list',
@@ -52,7 +54,7 @@ class PermissionController extends Controller
         $permission->slug = $request->slug??$permission->generateUniqueSlug($request->name);
         $permission->permissions = implode('###',$request->permissions);
         $permission->save();
-        return redirect()->back()->with('success', 'Permission added');     
+        return redirect()->back()->with('success', 'Permission added');
     }
 
     public function editPermission($id)
@@ -97,7 +99,7 @@ class PermissionController extends Controller
         $permission->slug = $slug;
         $permission->permissions = implode('###',$request->permissions);
         $permission->save();
-        return redirect()->back()->with('success', 'Permission updated');   
+        return redirect()->back()->with('success', 'Permission updated');
     }
 
 }

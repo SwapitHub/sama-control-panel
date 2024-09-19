@@ -4,6 +4,7 @@
 	use Illuminate\Support\Facades\Validator;
 	use Illuminate\Http\Request;
 	use App\Models\Country;
+	use App\Models\Settings;
 
 	class CountryController extends Controller
 	{
@@ -14,6 +15,7 @@
 			'viewurl' =>route('admin.countryadd'),
 			'editurl'=>'admin.editcountry',
 			'list'=> Country::orderBy('id','desc')->get(),
+            'prifix' => Settings::first()->route_web_prifix,
 			];
 			return view('admin.countryList',$data);
 		}
