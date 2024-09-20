@@ -26,13 +26,13 @@ class MenuController extends Controller
     {
         $this->validate($request, [
             'menuname' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5048', // Adjust mime types and max size as needed
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5048', // Adjust mime types and max size as needed
         ], [
             'menuname.required' => 'The menu name field is required.',
-            'image.required' => 'An image is required.',
-            'image.image' => 'The uploaded file must be an image.',
-            'image.mimes' => 'The image must be a JPEG, PNG, JPG, WEBP or GIF file.',
-            'image.max' => 'The image size must not exceed 5 MB.',
+            // 'image.required' => 'An image is required.',
+            // 'image.image' => 'The uploaded file must be an image.',
+            // 'image.mimes' => 'The image must be a JPEG, PNG, JPG, WEBP or GIF file.',
+            // 'image.max' => 'The image size must not exceed 5 MB.',
         ]);
 
         if ($request->file('image') != NULL) {
@@ -41,6 +41,9 @@ class MenuController extends Controller
             $path = $request->file('image')->storeAs('public/storage/images/menus', $fileName, 's3');
             $image_path = 'images/menus/' . $fileName;
             Storage::disk('s3')->setVisibility($path, 'public');
+        }else
+        {
+            $image_path = '';
         }
         $menu = new Menu;
         $menu->name = $request->menuname;

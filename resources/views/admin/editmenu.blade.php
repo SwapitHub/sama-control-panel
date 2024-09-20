@@ -61,8 +61,7 @@
 									</div>
 								</div>
 								<div class="form-group row">
-									<label for="image" class="col-xl-3 col-md-4"><span>*</span>
-									Image</label>
+									<label for="image" class="col-xl-3 col-md-4">Image</label>
 									<div class="col-md-8">
 										<input class="form-control dropify" id="image" data-default-file="{{ env('AWS_URL') }}public/storage/{{ $menudata->image }}" name="image" type="file">
 										@error('image')
