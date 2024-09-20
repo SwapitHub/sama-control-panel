@@ -264,6 +264,8 @@ class ProductController extends Controller
             $product =  ProductModel::where('entity_id', $entity_id)->orWhere('slug', $entity_id)->first();
             $product['name'] = ucfirst(strtolower(!empty($product['name']) ? $product['name'] : $product['product_browse_pg_name']));
             $product['description'] = ucfirst(strtolower($product['description']));
+            $product['meta_title'] = ucfirst(strtolower(!empty($product['meta_title']) ? $product['meta_title'] : $product['product_browse_pg_name']));
+            $product['meta_description'] = ucfirst(strtolower(!empty($product['meta_description']) ? $product['meta_description'] : $product['description']));
             // $product['images'] = json_decode($product['images']);
             // $product['videos'] = json_decode($product['videos']);
             ## fetch images from s3 and database
