@@ -35,15 +35,18 @@ class FontController extends Controller
         $this->validate($request, [
             'label' => 'required',
             'value' => 'required',
+            'css' => 'required',
         ], [
             'label.required' => 'The Label field is required.',
             'value.required' => 'The Value field is required.',
+            'css.required' => 'The Css field is required.',
 
         ]);
 
         $font = new Font;
         $font->value = $request->value;
         $font->label = $request->label;
+        $font->css = $request->css;
         $font->save();
         return redirect()->back()->with('success', 'Font added successfully');
     }
@@ -67,12 +70,17 @@ class FontController extends Controller
     {
         $obj = Font::find($id);
         $this->validate($request, [
-            'name' => 'required',
+            'label' => 'required',
+            'value' => 'required',
+            'css' => 'required',
         ], [
-            'name.required' => 'The name field is required.',
+            'label.required' => 'The label field is required.',
+            'value.required' => 'The value field is required.',
+            'css.required' => 'The css field is required.',
         ]);
         $obj->value = $request->value;
         $obj->label = $request->label;
+        $obj->css = $request->css;
         $obj->save();
         return redirect()->back()->with('success', 'Font updated successfully');
     }

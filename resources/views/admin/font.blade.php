@@ -59,12 +59,23 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="validationCustom4" class="col-xl-3 col-md-4">
+                                            <label for="validationCustom4" class="col-xl-3 col-md-4"><span>*</span>
                                                 Value</label>
                                             <div class="col-xl-8 col-md-7">
                                                 <input type="text" name="value" value="{!! old() ? old('value') : $obj['value'] ?? '' !!}" placeholder="Value"
                                                     class="form-control">
                                                 @error('value')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="validationCustom4" class="col-xl-3 col-md-4"><span>*</span>
+                                                style</label>
+                                            <div class="col-xl-8 col-md-7">
+                                                <input type="text" name="css" value="{!! old() ? old('css') : $obj['css'] ?? '' !!}" placeholder="Styling"
+                                                    class="form-control">
+                                                @error('css')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
