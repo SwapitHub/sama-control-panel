@@ -62,8 +62,8 @@
 												<input class="checkbox_animated check-it" type="checkbox"
 												value="" id="flexCheckDefault" data-id="{{ $item->id }}">
 											</td>
-											<td class="text-capitalize">{{ $item->label }}</td>
-											<td class="text-capitalize">{{ $item->value }}</td>
+											<td class="text-capitalize" style="{{ $item->css }}">{{ $item->label }}</td>
+											<td class="text-capitalize" style="{{ $item->css }}">{{ $item->value }}</td>
 											<td class="list-date">
 											    <a href="{{ route($editurl, ['id' => $item->id]) }}">
 													<i class="fa fa-edit" title="Edit"></i>
