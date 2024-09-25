@@ -16,7 +16,6 @@ class PriceExport implements FromQuery, WithHeadings, WithChunkReading, ShouldAu
     public function query()
     {
         return ProductPrice::query()
-            // ->select('product_price.id,product_price.product_sku,product_price.metalType,product_price.metalColor,product_price.diamondQuality,product_price.finishLevel,product_price.diamond_type,product_price.reference_price,product_price.discount_percentage,product_price.price', 'menus.name as menu_name')
             ->select([
                 'product_price.id',
                 'product_price.product_sku',
@@ -25,10 +24,9 @@ class PriceExport implements FromQuery, WithHeadings, WithChunkReading, ShouldAu
                 'product_price.diamondQuality',
                 'product_price.finishLevel',
                 'product_price.diamond_type',
-                'product_price.reference_price',
-                'product_price.discount_percentage',
+                // 'product_price.reference_price',
+                // 'product_price.discount_percentage',
                 'product_price.price',
-                // 'products.parent_sku as parent_sku',
                 DB::raw('COALESCE(products.parent_sku, products.sku) as sku_to_use'),
                 'products.internal_sku as samasku',
                 'products.fractionsemimount as fractionsemimount',
@@ -51,8 +49,8 @@ class PriceExport implements FromQuery, WithHeadings, WithChunkReading, ShouldAu
             'diamondQuality',
             'finishLevel',
             'diamond_type',
-            'reference_price',
-            'discount_percentage',
+            // 'reference_price',
+            // 'discount_percentage',
             'price',
             'parent_sku',
             'samaSku',
