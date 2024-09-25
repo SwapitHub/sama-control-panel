@@ -161,7 +161,6 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::post('/country/{id}', [App\Http\Controllers\CountryController::class, 'postEdit'])->name('admin.updatecountry');
     Route::get('/deletecountry/{id}', [App\Http\Controllers\CountryController::class, 'deleteCountry']);
     ##state route
-
     Route::get('/state', [App\Http\Controllers\StateController::class, 'index'])->name('admin.state');
     Route::get('/state/add', [App\Http\Controllers\StateController::class, 'create'])->name('admin.addstate');
     Route::post('/state/add', [App\Http\Controllers\StateController::class, 'postCreate'])->name('admin.postaddstate');
@@ -169,6 +168,15 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::post('/state/update/{id}', [App\Http\Controllers\StateController::class, 'postEdit'])->name('admin.updatestate');
     Route::get('/deletecountry/{id}', [App\Http\Controllers\CountryController::class, 'deleteCountry']);
     ##state route
+
+     ##Font route
+     Route::get('/font', [App\Http\Controllers\FontController::class, 'index'])->name('admin.font');
+     Route::get('/font/add', [App\Http\Controllers\FontController::class, 'create'])->name('admin.addfont');
+     Route::post('/font/add', [App\Http\Controllers\FontController::class, 'postCreate'])->name('admin.postaddfont');
+     Route::get('/font/edit/{id}', [App\Http\Controllers\FontController::class, 'edit'])->name('admin.editfont');
+     Route::post('/font/update/{id}', [App\Http\Controllers\FontController::class, 'update'])->name('admin.updatefont');
+     Route::get('/font/delete/{id}', [App\Http\Controllers\FontController::class, 'distroy']);
+     ##font route
 
     Route::get('/ringprong/', [App\Http\Controllers\RingProngController::class, 'index'])->name('admin.ringprong');
     Route::get('/ringprong/add', [App\Http\Controllers\RingProngController::class, 'createProng'])->name('admin.addringprong');

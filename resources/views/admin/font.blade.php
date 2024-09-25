@@ -19,7 +19,7 @@
                                     <i data-feather="home"></i>
                                 </a>
                             </li>
-                            <li class="breadcrumb-item"><a href="{{ route($backtrack) }}">State List</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route($backtrack) }}">Font List</a></li>
                             <li class="breadcrumb-item active">{{ $title }} </li>
                         </ol>
                     </div>
@@ -37,7 +37,7 @@
                             <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
                                 <li class="nav-item"><a class="nav-link active" id="top-profile-tab" data-bs-toggle="tab"
                                         href="#top-profile" role="tab" aria-controls="top-profile"
-                                        aria-selected="true"><i data-feather="life-buoy" class="me-2"></i>State</a>
+                                        aria-selected="true"><i data-feather="life-buoy" class="me-2"></i>Font</a>
                                 </li>
                             </ul>
                             <div class="tab-content" id="top-tabContent">
@@ -47,61 +47,30 @@
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="form-group row">
-                                            <label for="validationCustom0" class="col-xl-3 col-md-4"><span>*</span>Country
+                                            <label for="validationCustom0" class="col-xl-3 col-md-4"><span>*</span>Label
                                             </label>
                                             <div class="col-xl-8 col-md-7">
-                                                <select name="country_id" id="" class="form-control">
-                                                    <option selected disabled>--select--</option>
-                                                    @foreach ($countries as $country)
-                                                        <option value="{{ $country['id'] }}" {{ isset($obj['country_id']) && $obj['country_id'] == $country['id']?'selected':''  }} >{{ $country['name'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                                {{-- <input class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-											value="{!! old()?old('name'):$obj['name']??'' !!}" type="text" placeholder="Name"> --}}
-                                                @error('country_id')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="validationCustom0" class="col-xl-3 col-md-4"><span>*</span>Name
-                                            </label>
-                                            <div class="col-xl-8 col-md-7">
-                                                <input class="form-control @error('name') is-invalid @enderror"
-                                                    id="name" name="name" value="{!! old() ? old('name') : $obj['name'] ?? '' !!}"
-                                                    type="text" placeholder="Name">
-                                                @error('name')
+                                                <input class="form-control @error('label') is-invalid @enderror"
+                                                    id="label" name="label" value="{!! old() ? old('label') : $obj['label'] ?? '' !!}"
+                                                    type="text" placeholder="label">
+                                                @error('label')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="validationCustom4" class="col-xl-3 col-md-4">
-                                                Tax percentage</label>
+                                                Value</label>
                                             <div class="col-xl-8 col-md-7">
-                                                <input type="text" name="tax_percentage" value="{!! old() ? old('tax_percentage') : $obj['tax_percentage'] ?? '' !!}" placeholder="0.00"
+                                                <input type="text" name="value" value="{!! old() ? old('value') : $obj['value'] ?? '' !!}" placeholder="Value"
                                                     class="form-control">
-                                                @error('tax_percentage')
+                                                @error('value')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
+
                                         {{-- <div class="form-group row">
-										<label for="validationCustom4" class="col-xl-3 col-md-4">
-										slug</label>
-										<div class="col-xl-8 col-md-7">
-											<input type="text" name="slug" placeholder="{!! $obj['slug']??'slug' !!}" class="form-control">
-											@if (!empty($obj))
-											<small>leave blank if you do not want to update</small>
-											@else
-											<small>leave blank if you want system generated</small>
-											@endif
-											@error('slug')
-											<div class="invalid-feedback">{{ $message }}</div>
-											@enderror
-										</div>
-									</div> --}}
-                                        <div class="form-group row">
                                             <label for="validationCustom0" class="col-xl-3 col-md-4">order </label>
                                             <div class="col-xl-8 col-md-7">
                                                 <input class="form-control" id="order_number" name="order_number"
@@ -121,7 +90,7 @@
                                                     <label for="checkbox-primary-2">Enable the State</label>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="pull-left">
                                             <button type="submit" class="btn btn-primary submitBtn">Save <i
                                                     class="fa fa-spinner fa-spin main-spinner d-none"></i></button>

@@ -606,6 +606,11 @@
                             </a>
                             <ul class="sidebar-submenu">
                                 <li>
+                                    <a href="{{ route('admin.font') }}">
+                                        <i class="fa fa-circle"></i>Fonts
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="{{ route('admin.country') }}">
                                         <i class="fa fa-circle"></i>Country
                                     </a>
