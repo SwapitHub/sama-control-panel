@@ -22,6 +22,7 @@ Route::prefix('v1')->group(function () {
     Route::post('password/email', [App\Http\Controllers\API\ForgotPasswordController::class, 'sendResetLinkEmail']);
     Route::post('password/reset', [App\Http\Controllers\API\ResetPasswordController::class, 'reset']);
     // Route::middleware('auth:sanctum')->group(function () {
+    Route::any('fonts', [App\Http\Controllers\API\FontController::class, 'index']);
     Route::any('country-list', [App\Http\Controllers\API\CountryController::class, 'index']);
     Route::any('getstate-list', [App\Http\Controllers\API\CountryController::class, 'fetchStateBasedOnCountry']);
     Route::any('overnight-shipping-charge', [App\Http\Controllers\API\CountryController::class, 'fetchOvernightShippingCharge']);
