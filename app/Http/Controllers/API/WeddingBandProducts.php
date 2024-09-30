@@ -44,7 +44,7 @@ class WeddingBandProducts extends Controller
                 'res' => 'error',
                 'msg' => 'No product found!',
                 'data' => []
-            ], 401);
+            ], 200);
         }
 
 
