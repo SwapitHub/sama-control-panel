@@ -39,6 +39,17 @@ class WeddingBandProducts extends Controller
                 ->first();
         }
 
+        if ((!empty($category_slug) && is_null($cat_id)) || (!empty($subcategory_slug) && is_null($subcat_id))) {
+            return response()->json([
+                'res' => 'error',
+                'msg' => 'No product found!',
+                'data' => []
+            ], 401);
+        }
+
+
+        // Check if both category and subcategory IDs are empty
+
         $query = ProductModel::where('menu', 2)
             ->whereNull('products.parent_sku')
             ->where('products.status', 'true');
@@ -95,11 +106,22 @@ class WeddingBandProducts extends Controller
                 $query->where('products.is_bestseller', '1');
             }
         }
+
+
+
         ####################################
         $query->select('id', 'name', 'product_browse_pg_name', 'slug', 'sku', 'internal_sku', 'menu', 'category_id', 'subcategory_ids', 'white_gold_price', 'yellow_gold_price', 'rose_gold_price', 'platinum_price', 'default_image_url', 'images', 'is_bestseller', 'created_at');
         $actual_count = $query->count();
         $productsList = $query->paginate(30);
+        //  Debug the query
+        // $sql = $query->toSql();
+        // $bindings = $query->getBindings();
+
+        // dd($sql, $bindings);
         $count = $productsList->count();
+
+
+
 
         if ($count) {
             $productList = [];
