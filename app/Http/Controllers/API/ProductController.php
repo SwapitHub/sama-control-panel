@@ -143,6 +143,10 @@ class ProductController extends Controller
                     }
                 });
             }
+            else
+            {
+                $products->where("products.subcategory_ids", $request->subcategory);
+            }
         }
 
         // Debug the query
