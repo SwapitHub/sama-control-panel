@@ -70,7 +70,7 @@
 										<label for="validationCustom4" class="col-xl-3 col-md-4">
 										<span>*</span>Image</label>
 										<div class="col-xl-8 col-md-7">
-											<input type="file" name="image" data-default-file="{{ old('image') ? old('image') : (isset($obj) && is_object($obj) && isset($obj->icon) ? asset('storage/app/public/' . $obj->icon) : '') }}"  class="form-control dropify">
+											<input type="file" name="image" data-default-file="{{ old('image') ? old('image') : (isset($obj) && is_object($obj) && isset($obj->image) ? env('AWS_URL'.'public'/' . $obj->image) : '') }}"  class="form-control dropify">
 											@error('image')
 											<style> .dropify-wrapper { border:1px solid red;border-radius: 0.25rem; } </style>
 											<div class="invalid-feedback">{{ $message }}</div>
