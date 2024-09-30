@@ -82,7 +82,7 @@
                                                         <i class="fa fa-edit" title="Edit"></i>
                                                     </a>
                                                     <a href="javascript:void(0)"
-                                                        onclick="deleteItem('{{ url($profix.'/shopbystyle/delete') }}/{{ $item->id }}')"
+                                                        onclick="deleteItem('{{ url($prifix.'/shopbystyle/delete') }}/{{ $item->id }}')"
                                                         title="Delete Banner"><i class="fa fa-trash font-danger"></i></a>
                                                 </td>
                                             </tr>
