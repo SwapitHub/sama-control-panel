@@ -15,7 +15,7 @@ class ShopByStyleController extends Controller
 
         $data = ShopByStyle::orderBy('order_number', 'asc')->where('status', 'true')->get();
         foreach ($data as $banner) {
-            $banner->image = env('AWS_URL') . 'public/' . $banner->banner;
+            $banner->image = env('AWS_URL') . 'public/' . $banner->image;
         }
         $output['data'] = $data;
         return response()->json($output)
