@@ -103,6 +103,10 @@ class WeddingBandProducts extends Controller
         $actual_count = $query->count();
         $productsList = $query->paginate(30);
             //  Debug the query
+            $sql = $query->toSql();
+            $bindings = $query->getBindings();
+
+            dd($sql, $bindings);
         $count = $productsList->count();
 
 

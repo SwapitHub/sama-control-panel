@@ -296,6 +296,14 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::get('/shopbycat/edit/{id}', [App\Http\Controllers\HomeContentController::class, 'editShopByCat'])->name('admin.shopbycat.edit');
     Route::post('/shopbycat/update/{id}', [App\Http\Controllers\HomeContentController::class, 'updateShopByCat'])->name('admin.shopbycat.update');
 
+     ## home page shop by style section
+     Route::get('/shopbystyle', [App\Http\Controllers\ShopByStyleController::class, 'index'])->name('admin.style.list');
+     Route::get('/shopbystyle/add', [App\Http\Controllers\ShopByStyleController::class, 'create'])->name('admin.style.view');
+     Route::post('/shopbystyle/add', [App\Http\Controllers\ShopByStyleController::class, 'postCreate'])->name('admin.style.add');
+     Route::get('/shopbystyle/edit/{id}', [App\Http\Controllers\ShopByStyleController::class, 'edit'])->name('admin.style.edit');
+     Route::post('/shopbystyle/update/{id}', [App\Http\Controllers\ShopByStyleController::class, 'update'])->name('admin.style.update');
+
+
 
     Route::get('/widget', [App\Http\Controllers\FaqController::class, 'widgetList'])->name('admin.widget.list');
 

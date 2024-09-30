@@ -308,6 +308,11 @@
                                         <i class="fa fa-circle"></i>Shop by Category
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ route('admin.style.list') }}">
+                                        <i class="fa fa-circle"></i>Shop by style
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         {{-- <li>
