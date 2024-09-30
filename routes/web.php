@@ -302,6 +302,7 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
      Route::post('/shopbystyle/add', [App\Http\Controllers\ShopByStyleController::class, 'postCreate'])->name('admin.style.add');
      Route::get('/shopbystyle/edit/{id}', [App\Http\Controllers\ShopByStyleController::class, 'edit'])->name('admin.style.edit');
      Route::post('/shopbystyle/update/{id}', [App\Http\Controllers\ShopByStyleController::class, 'update'])->name('admin.style.update');
+     Route::post('/shopbystyle/delete/{id}', [App\Http\Controllers\ShopByStyleController::class, 'delete'])->name('admin.style.update');
 
 
 

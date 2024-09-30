@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\Request;
@@ -110,5 +111,23 @@ class ShopByStyleController extends Controller
         $obj->status = $request->status ?? 'false';
         $obj->save();
         return redirect()->back()->with('success', 'Data updated successfully');
+    }
+
+    public function delete($id)
+    {
+        if ($id) {
+            $bannerdata = ShopByStyle::find($id);
+            $oldImagePath = 'public/' . $bannerdata->banner; // Replace with the actual path
+            if (Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
+            }
+            $bannerdata->delete();
+            $output['res'] = 'success';
+            $output['msg'] = 'Data Deleted';
+        } else {
+            $output['res'] = 'error';
+            $output['msg'] = 'Id Required';
+        }
+        echo json_encode($output);
     }
 }
