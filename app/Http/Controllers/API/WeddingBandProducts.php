@@ -39,6 +39,18 @@ class WeddingBandProducts extends Controller
                 ->first();
         }
 
+        if (is_null($cat_id) && is_null($subcat_id)) {
+            // Return empty response when both category and subcategory are missing
+            $output = [
+                'res' => 'error',
+                'msg' => 'No product found!',
+                'count' => 0,
+                'product_count' => 0,
+                'data' => []
+            ];
+            return response()->json($output);
+        }
+
         $query = ProductModel::where('menu', 2)
             ->whereNull('products.parent_sku')
             ->where('products.status', 'true');
