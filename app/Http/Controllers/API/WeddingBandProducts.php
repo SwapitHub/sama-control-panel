@@ -70,6 +70,7 @@ class WeddingBandProducts extends Controller
             $subcatSlugs = explode(',', $request->query('subcategory'));
             ## Fetch corresponding IDs based on slugs
             $subcatIds = ProductSubcategory::where('category_id', 2)->whereIn('slug', $subcatSlugs)->pluck('id')->toArray();
+
             ## If there are IDs, use them in the WHERE clause
             if (!empty($subcatIds)) {
                 $query->where(function ($querys) use ($subcatIds) {
@@ -77,6 +78,10 @@ class WeddingBandProducts extends Controller
                         $querys->orWhereRaw("FIND_IN_SET(?, products.subcategory_ids)", [$id]);
                     }
                 });
+            }
+            else
+            {
+                $query->where("products.subcategory_ids", $request->subcategory);
             }
         }
 
@@ -102,11 +107,6 @@ class WeddingBandProducts extends Controller
         $query->select('id', 'name', 'product_browse_pg_name', 'slug', 'sku', 'internal_sku', 'menu', 'category_id', 'subcategory_ids', 'white_gold_price', 'yellow_gold_price', 'rose_gold_price', 'platinum_price', 'default_image_url', 'images', 'is_bestseller', 'created_at');
         $actual_count = $query->count();
         $productsList = $query->paginate(30);
-            //  Debug the query
-            $sql = $query->toSql();
-            $bindings = $query->getBindings();
-
-            dd($sql, $bindings);
         $count = $productsList->count();
 
 
