@@ -82,6 +82,7 @@ Route::prefix('v1')->group(function () {
     Route::any('check', [App\Http\Controllers\API\MenuController::class, 'check']);
     Route::any('cms-metadata', [App\Http\Controllers\API\MenuController::class, 'cmsMetaData']);
     Route::any('vdb-diamonds', [App\Http\Controllers\API\VDBController::class, 'diamonds']);
+    Route::any('vdb-gemstones', [App\Http\Controllers\API\VDBController::class, 'gemstones']);
     // });
 });
 
