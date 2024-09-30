@@ -53,7 +53,7 @@ class ShopByStyleController extends Controller
             $imagepath = 'images/home/' . $fileName;
         }
         $shopbyshape = new ShopByStyle;
-        $shopbyshape->title = $request->name;
+        $shopbyshape->name = $request->name;
         $shopbyshape->link = $request->link;
         $shopbyshape->order_number = $request->order_number ?? 0;
         $shopbyshape->image = $imagepath;
@@ -102,7 +102,7 @@ class ShopByStyleController extends Controller
         } else {
             $imagepath = $obj->image;
         }
-        $obj->title = $request->name;
+        $obj->name = $request->name;
         $obj->link = $request->link;
         $obj->order_number = $request->order_number;
         $obj->image = $imagepath;
