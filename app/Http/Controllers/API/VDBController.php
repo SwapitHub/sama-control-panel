@@ -40,7 +40,12 @@ class VDBController extends Controller
         $response = curl_exec($curl);
 
         curl_close($curl);
-        echo $response;
+        // echo $response;
+        return response($response)
+        ->header('Content-Type', 'application/json')
+        ->header('Access-Control-Allow-Origin', '*') // Allow all origins or specify your frontend domain
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
     }
 
 
@@ -69,6 +74,11 @@ class VDBController extends Controller
         $response = curl_exec($curl);
 
         curl_close($curl);
-        echo $response;
+        // echo $response;
+        return response($response)
+        ->header('Content-Type', 'application/json')
+        ->header('Access-Control-Allow-Origin', '*') // Allow all origins or specify your frontend domain
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
     }
 }
