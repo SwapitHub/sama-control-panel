@@ -19,7 +19,9 @@ class ProductExport implements FromCollection
         $data = ProductModel::all();
 
         // Get the column names from the database schema
-        $columns = Schema::getColumnListing((new ProductModel())->getTable());
+        // $columns = Schema::getColumnListing((new ProductModel())->getTable());
+        $columns = array_map('strtolower', Schema::getColumnListing((new ProductModel())->getTable()));
+
         dd($columns);
 
         // Map the column names to the actual database columns and remove any unwanted columns
