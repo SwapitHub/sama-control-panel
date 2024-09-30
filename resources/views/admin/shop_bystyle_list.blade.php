@@ -81,9 +81,6 @@
                                                     <a href="{{ route($editurl, ['id' => $item->id]) }}">
                                                         <i class="fa fa-edit" title="Edit"></i>
                                                     </a>
-                                                    <a href="javascript:void(0)"
-                                                        onclick="deleteItem('{{ url($prifix.'/shopbystyle/delete') }}/{{ $item->id }}')"
-                                                        title="Delete Banner"><i class="fa fa-trash font-danger"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach
