@@ -18,7 +18,7 @@ class VDBController extends Controller
 
     public function diamonds(Request $request)
     {
-        $vdb_url = 'https://apiservices.vdbapp.com/v2/diamonds';
+        $vdb_url = 'https://apiservices.vdbapp.com//v2/diamonds';
         $parameters = $request->query();
         $query_string = http_build_query($parameters);
         $full_url = $vdb_url . '?' . $query_string;
@@ -51,7 +51,7 @@ class VDBController extends Controller
 
     public function gemstones(Request $request)
     {
-        $vdb_url = 'https://apiservices.vdbapp.com/v2/gemstones';
+        $vdb_url = 'https://apiservices.vdbapp.com//v2/gemstones';
         $parameters = $request->query();
         $query_string = http_build_query($parameters);
         $full_url = $vdb_url . '?' . $query_string;
