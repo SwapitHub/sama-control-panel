@@ -131,7 +131,7 @@
                                                 <td>{{ $item->internal_sku }}</td>
                                                 <td>{{ $item->type == 'parent_product' ? 'Parent Product' : 'Child Product' }}
                                                     <br>
-                                                    <a href="{{ url('/db-product-list/edit') }}/{{ getProductIdBasedOnSku(!is_null($item->parent_sku) ? $item->parent_sku : $item->sku) }}"
+                                                    <a href="{{ url($prifix.'/db-product-list/edit') }}/{{ getProductIdBasedOnSku(!is_null($item->parent_sku) ? $item->parent_sku : $item->sku) }}"
                                                         style="text-decoration: underline; color:blue !important">{{ !is_null($item->parent_sku) && $item->parent_sku != null ? $item->parent_sku : $item->sku }}</a>
                                                 </td>
                                                 {{-- <td class="text-uppercase"> <span class="badge badge-{{ ($item->status=='true')?'success':'primary' }}">{{ $item->status }}</span> </td> --}}

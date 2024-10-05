@@ -99,7 +99,8 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 // if ($input['parent_sku'] == $input['sku']) {
                 //     $input['parent_sku'] = NULL;
                 // }
-                if ($input['parent_sku'] == NULL || empty($input['parent_sku'])) {
+                if ($input['parent_sku'] == NULL || empty($input['parent_sku']) || $input['parent_sku'] === $input['sku']) {
+                    $input['parent_sku'] ='';
                     $input['type'] = 'parent_product';
                 } else {
                     $input['type'] = 'child_product';
@@ -112,6 +113,10 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 $input['metalColor_id'] = $this->getMetalColorIdByName($input['metalcolor']);
                 $input['status'] = 'true';
                 unset($input['subcategory']);
+                unset($input['sama_sku']);
+                unset($input['child_sama_sku']);
+                unset($input['product_pg_name']);
+                unset($input['product']);
 
                 $matchData = ['sku' => $input['sku']];
                 $product = ProductModel::where($matchData)->first();

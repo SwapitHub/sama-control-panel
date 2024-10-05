@@ -45,6 +45,7 @@ class ProductImport implements ToCollection, WithHeadingRow
         foreach ($collection as $row) {
             if ($row->filter()->isNotEmpty()) {
                 $input = $row->toArray();
+                // dd($input);
                 ## insert category and subcategory
                 $categories = explode('/', $input['subcategory']);
                 $mainMenu = $categories[0];
@@ -95,7 +96,8 @@ class ProductImport implements ToCollection, WithHeadingRow
                 $input['category'] = 7;
                 $input['metalColor_id'] = $this->getMetalColorIdByName($input['metalcolor']);
                 $input['metalType_id'] = $this->getMetalTypeIdByName($input['metaltype']);
-                if ($input['parent_sku'] == NULL) {
+                if ($input['parent_sku'] == NULL || $input['parent_sku'] === $input['sku']) {
+                    $input['parent_sku'] ='';
                     $input['type'] = 'parent_product';
                 } else {
                     $input['type'] = 'child_product';
@@ -105,6 +107,7 @@ class ProductImport implements ToCollection, WithHeadingRow
                 foreach ($images as $img) {
                     $images_arr[] = $img;
                 }
+                $input['name'] = $input['product_pg_name'];
                 $input['images'] = json_encode($images) ?? null;
                 $input['videos'] = isset($input['videos']) ? $this->sortVideos($input['videos']) : null;
                 $input['internal_sku'] = $this->convertToSamaSku(['sku' => $input['sku'], 'fractionsemimount' => $input['fractionsemimount']]);
@@ -113,6 +116,10 @@ class ProductImport implements ToCollection, WithHeadingRow
                 $input['slug'] = $generateSlug->generateUniqueSlug(!empty($input['product_browse_pg_name']) ? $input['product_browse_pg_name'] : $input['name']);
 
                 unset($input['subcategory']);
+                unset($input['sama_sku']);
+                unset($input['child_sama_sku']);
+                unset($input['product_pg_name']);
+                unset($input['product']);
                 $matchData = ['sku' => $input['sku']];
                 $product = ProductModel::where($matchData)->first();
 

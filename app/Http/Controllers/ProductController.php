@@ -27,6 +27,7 @@ use Maatwebsite\Excel\Excel as ExcelType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Jobs\ExportPriceJob;
+use App\Models\Settings;
 
 class ProductController extends Controller
 {
@@ -320,6 +321,7 @@ class ProductController extends Controller
             ->where('status', 'true')
             ->get();
         $data['menus'] = Menu::where('status', 'true')->get();
+        $data['prifix'] = Settings::first()->route_web_prifix;
         $data['info'] = ['meta_title' => 'Sama Product Listing', 'meta_keyword' => 'Sama Product Listing', 'meta_description' => 'Sama Product Listing'];
         $products->appends(['filter' => $request->filter, 'type' => $request->type, 'menu' => $request->menu]);
         return view('admin.db-product', $data);
