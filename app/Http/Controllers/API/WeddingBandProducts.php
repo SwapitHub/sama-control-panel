@@ -39,9 +39,17 @@ class WeddingBandProducts extends Controller
                 ->first();
         }
 
+        // $query = ProductModel::where('menu', 2)
+        //     ->whereNull('products.parent_sku')
+        //     ->orWhereColumn('products.sku', 'products.parent_sku')
+        //     ->where('products.status', 'true');
+
         $query = ProductModel::where('menu', 2)
-            ->whereNull('products.parent_sku')
-            ->where('products.status', 'true');
+            ->where(function ($subQuery) {
+                $subQuery->whereNull('products.parent_sku') // Check if parent_sku is null
+                    ->orWhereColumn('products.sku', 'products.parent_sku'); // Check if product sku equals parent_sku
+            })
+            ->where('products.status', 'true'); // Ensure status is true
 
         if ($cat_id) {
             $query->where('products.category', $cat_id);
@@ -78,9 +86,7 @@ class WeddingBandProducts extends Controller
                         $querys->orWhereRaw("FIND_IN_SET(?, products.subcategory_ids)", [$id]);
                     }
                 });
-            }
-            else
-            {
+            } else {
                 $query->where("products.subcategory_ids", $request->subcategory);
             }
         }

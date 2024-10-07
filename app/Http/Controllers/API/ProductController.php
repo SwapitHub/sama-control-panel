@@ -83,10 +83,10 @@ class ProductController extends Controller
         $output['res'] = 'success';
         $output['msg'] = 'data retrieved successfully';
         $products = ProductModel::where('menu', 7)
-            // ->whereNull('products.parent_sku')
             ->where(function ($query) {
                 $query->whereNull('products.parent_sku')
-                    ->orWhere('products.parent_sku', '');
+                    ->orWhere('products.parent_sku', '')
+                    ->orWhereColumn('products.sku', 'products.parent_sku');
             })
             ->where('products.status', 'true');
         // Apply the bridal sets filter
@@ -402,6 +402,7 @@ class ProductController extends Controller
         if (!empty($q)) {
             $products = ProductModel::orderBy('entity_id', 'desc')
                 ->whereNull('parent_sku')
+                ->orWhereColumn('products.sku', 'products.parent_sku')
                 ->where('status', 'true')
                 ->where(function ($query) use ($q) {
                     $query->where('name', 'like', "$q%")
