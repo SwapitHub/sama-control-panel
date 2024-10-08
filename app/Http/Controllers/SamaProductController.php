@@ -38,9 +38,9 @@ class SamaProductController extends Controller
         $res = Excel::import($importedData, $request->file('sama_products'));
         $importStatus = $importedData->getImportStatus();
         if ($importStatus['is_updated'] == 'true') {
-            return redirect()->route('admin.product.dblist')->with('success', 'Product imported successfully');
+            return redirect()->back()->with('success', 'Internal product added successfully');
         } else {
-            return redirect()->route('admin.product.dblist')->with('success', 'Something went wrong');
+            return redirect()->back()->with('error', 'Something went wrong');
         }
     }
 
