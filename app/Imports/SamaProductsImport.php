@@ -62,6 +62,8 @@ class SamaProductsImport implements ToCollection, WithHeadingRow
                         'images' => isset($input['images']) ? $input['images'] : '',
                         'videos' => isset($input['videos']) ? $input['videos'] : '',
                     ];
+
+                    dd($insertToSamaProduct);
                     $where = ['sku' => $input['sku']];
                     $saved = SamaProductsModel::updateOrCreate($where, $insertToSamaProduct);
                     DB::commit();
