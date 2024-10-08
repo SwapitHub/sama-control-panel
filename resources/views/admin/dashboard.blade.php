@@ -199,6 +199,24 @@
                         </div>
                     </a>
                 </div>
+                <div class="col-xxl-3 col-md-6 xl-50">
+                    <a href="{{ route('sama.internal-product.list') }}">
+                        <div class="card o-hidden widget-cards">
+                            <div class="primary-box card-body">
+                                <div class="media static-top-widget align-items-center">
+                                    <div class="icons-widgets">
+                                        <div class="align-self-center text-center">
+                                                <i data-feather="box" class="font-secondary"></i>
+                                            </div>
+                                    </div>
+                                    <div class="media-body media-doller"><span class="m-0">Sama Internal Products</span>
+                                        <h3 class="mb-0"><span class="counter">{{ $internalProduct }}</span></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
 
 
             </div>

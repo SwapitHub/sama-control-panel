@@ -100,7 +100,7 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 //     $input['parent_sku'] = NULL;
                 // }
                 if ($input['parent_sku'] == NULL || empty($input['parent_sku']) || $input['parent_sku'] === $input['sku']) {
-                    $input['parent_sku'] ='';
+                    $input['parent_sku'] = '';
                     $input['type'] = 'parent_product';
                 } else {
                     $input['type'] = 'child_product';
@@ -118,7 +118,7 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 unset($input['product_pg_name']);
                 unset($input['product']);
 
-                $matchData = ['sku' => $input['sku']];
+                $matchData = ['sku' => $input['sku'], 'fractionsemimount' => $input['fractionsemimount']];
                 $product = ProductModel::where($matchData)->first();
 
                 if ($product) {
@@ -130,9 +130,23 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                     }
                 } else {
                     // Create a new product
-                    $saved = ProductModel::create($input);
-                    if (!$saved) {
-                        $stat = 'false';
+                    // $saved = ProductModel::create($input);
+                    // if (!$saved) {
+                    //     $stat = 'false';
+                    // }
+                    // $condition = ['fractionsemimount' => $input['fractionsemimount'],'parent_sku'=>$input['parent_sku']];
+                    $condition = [
+                        'fractionsemimount' => $input['fractionsemimount'],
+                        !empty($input['parent_sku']) ? 'parent_sku' : 'sku' =>  !empty($input['parent_sku']) ? $input['parent_sku'] : $input['sku'],
+                    ];
+
+
+                    $check = ProductModel::where($condition)->exists();
+                    if (!$check) {
+                        $saved = ProductModel::create($input);
+                        if (!$saved) {
+                            $stat = 'false';
+                        }
                     }
                 }
                 // var_dump($saved);
@@ -269,23 +283,23 @@ class ProductImport1 implements ToCollection, WithHeadingRow
         }
     }
 
-     ## convert Overmounting sku to sama sku
-     public function convertToSamaSku($overmountingData)
-     {
-         $sku = $overmountingData['sku'];
-         $fractionsemimount = $overmountingData['fractionsemimount'];
-         if (is_null($fractionsemimount) || empty($fractionsemimount)) {
-             $fractionsemimount = '000';
-         } else {
-             $mount = explode(' ', $fractionsemimount);
-             $mount0 = isset($mount[0]) ? $mount[0] : '';
-             $mount1 = isset($mount[1]) ? $mount[1] : '';
-             $totalMount = explode('/', $mount0);
-             $totalMount0 = isset($totalMount[0]) ? $totalMount[0] : '';
-             $totalMount1 = isset($totalMount[1]) ? $totalMount[1] : '';
-             $fractionsemimount = $totalMount0 . ($totalMount1 ? $totalMount1 : '');
-         }
-         $internal_sku = "SA" . str_replace('/', '', $sku) . '-' . $fractionsemimount;
-         return $internal_sku;
-     }
+    ## convert Overmounting sku to sama sku
+    public function convertToSamaSku($overmountingData)
+    {
+        $sku = $overmountingData['sku'];
+        $fractionsemimount = $overmountingData['fractionsemimount'];
+        if (is_null($fractionsemimount) || empty($fractionsemimount)) {
+            $fractionsemimount = '000';
+        } else {
+            $mount = explode(' ', $fractionsemimount);
+            $mount0 = isset($mount[0]) ? $mount[0] : '';
+            $mount1 = isset($mount[1]) ? $mount[1] : '';
+            $totalMount = explode('/', $mount0);
+            $totalMount0 = isset($totalMount[0]) ? $totalMount[0] : '';
+            $totalMount1 = isset($totalMount[1]) ? $totalMount[1] : '';
+            $fractionsemimount = $totalMount0 . ($totalMount1 ? $totalMount1 : '');
+        }
+        $internal_sku = "SA" . str_replace('/', '', $sku) . '-' . $fractionsemimount;
+        return $internal_sku;
+    }
 }

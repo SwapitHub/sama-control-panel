@@ -430,5 +430,9 @@ Route::group(['prefix'=>$prefix,'middleware' => ['admin.auth', 'checkUserAllowed
     Route::post('/update/shipping-status', [App\Http\Controllers\ShippingController::class, 'updateStatus'])->name('update.order.status');
 
     // Route::get('/send-test-email', [App\Http\Controllers\HomeContentController::class, 'sendTestEmail']);
+    Route::post('/sama-product/import1', [App\Http\Controllers\ProductController::class, 'importSamaProducts'])->name('sama.product.import1');
+    Route::get('/sama-product', [App\Http\Controllers\SamaProductController::class, 'index'])->name('sama.internal-product.list');
+    Route::post('/sama-product/import', [App\Http\Controllers\SamaProductController::class, 'importSamaProducts'])->name('sama.product.import');
+    Route::get('/sama-product/export', [App\Http\Controllers\SamaProductController::class, 'exportProducts'])->name('internal.products.export');
 });
 

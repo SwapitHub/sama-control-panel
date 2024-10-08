@@ -16,12 +16,14 @@ use App\Models\ProductSubcategory;
 use App\Models\Carat;
 use App\Models\CenterStone;
 use App\Models\DiamondShape;
+use App\Imports\SamaProductsImport;
 use App\Imports\ProductImport;
 use App\Models\ProductImageModel;
 use App\Imports\ProductImport1;
 use App\Imports\PriceImport;
 use App\Exports\ProductExport;
 use App\Exports\PriceExport;
+use App\Exports\SamaProducts;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Illuminate\Support\Facades\DB;
@@ -70,16 +72,16 @@ class ProductController extends Controller
         }
 
         $whereData = [
-            'product_sku'=>$request->product_sku,
-            'metalType'=>$request->metalType,
-            'metalColor'=>$request->metalColor,
-            'diamondQuality'=>$request->diamondQuality,
-            'diamond_type'=>$request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown',
-            'finishLevel'=>$request->finishLevel,
+            'product_sku' => $request->product_sku,
+            'metalType' => $request->metalType,
+            'metalColor' => $request->metalColor,
+            'diamondQuality' => $request->diamondQuality,
+            'diamond_type' => $request->diamondQuality == 'SI1, G' ? 'natural' : 'lab_grown',
+            'finishLevel' => $request->finishLevel,
         ];
 
         $query = ProductPrice::where($whereData);
-        if($query->exists()){
+        if ($query->exists()) {
             return redirect()->back()->withErrors(['combination' => 'This product price combination already exists.'])->withInput();
         }
         // save the data
@@ -931,46 +933,18 @@ class ProductController extends Controller
 
     public function Testing()
     {
-        // echo "OK";
-        //$IMAGES = "{"rose": "https://www.overnightmountings.com/gemfind/library/Images_And_Videos/50088-E/50088-E.video.rose.mp4", "white": "https://www.overnightmountings.com/gemfind/library/Images_And_Videos/50088-E/50088-E.video.white.mp4", "yellow": "https://www.overnightmountings.com/gemfind/library/Images_And_Videos/50088-E/50088-E.video.yellow.mp4"}";
+        return Excel::download(new SamaProducts, 'products.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
 
-        //print_r($IMAGES);
+    public function importSamaProducts(Request $request)
+    {
+        $request->validate([
+            'sama_products' => 'required|file|mimes:csv,xlsx',
+        ]);
 
-
-        // $products = ProductModel::orderBy('id', 'asc')
-        // ->offset(3500)
-        // ->limit(500)
-        // ->get();
-        // Initialize an array to store grouped SKUs
-        // $groupedSKUs = [];
-
-        // foreach ($products as $product) {
-        // echo "<pre>";
-        // var_dump($product['id']);
-        ##Extract the prefix before the hyphen
-        // $parts = explode('-', $product->sku);
-        // $prefix = $parts[0];
-
-        ##Check if the prefix already exists in the grouped SKUs array
-        // if (!isset($groupedSKUs[$prefix])) {
-        ##If not, add it as a new group with the current SKU as the parent
-        // $groupedSKUs[$prefix] = [
-        // 'parent' => $product->sku,
-        // 'variants' => []
-        // ];
-        // } else {
-        ##If the prefix already exists, add the current SKU as a variant under the parent SKU
-        // $groupedSKUs[$prefix]['variants'][] = $product->sku;
-
-        ##Update the parent_sku column for the current product
-        // $product->parent_sku = $groupedSKUs[$prefix]['parent'];
-        // $product->save();
-
-        // }
-        // }
-
-        //Print the grouped SKUs
-        ##echo "<pre>";
-        ##print_r($groupedSKUs);
+        echo $request->file('sama_products');
+        exit;
+        $importedData = new SamaProductsImport;
+        $res = Excel::import($importedData, $request->file('sama_products'));
     }
 }

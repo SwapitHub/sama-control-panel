@@ -101,6 +101,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr>
+                            <form action="{{ route('sama.product.import1') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <input type="file" name="sama_products" class="form-control" accept=".xlsx, .xls, .csv">
+                                </div>
+                                <dic class="form-group">
+                                    <button class="btn btn-primary" type="submit">submit</button>
+                                </dic>
+                            </form>
 
                         </div>
                         <div class="card-body">

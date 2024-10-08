@@ -17,6 +17,7 @@ use App\Models\Widget;
 use App\Models\Cmscontent;
 use App\Models\ContactUs;
 use App\Models\User;
+use App\Models\SamaProductsModel;
 use App\Library\UpsShipping;
 use App\Library\Clover;
 use Carbon\Carbon;
@@ -44,6 +45,7 @@ class AdminController extends Controller
         $this->dailysales = $this->getTodayTransactions();
         $this->monthlysales = $this->getMonthlyTransactions();
         $this->averageBasket = $this->averageBasketYTD();
+        $this->internalProducts = SamaProductsModel::count();
     }
 
     ## average Basket YTD
@@ -95,7 +97,8 @@ class AdminController extends Controller
             'monthlysales' =>  $this->monthlysales,
             'averageBasket' =>  $this->averageBasket,
             'transactions' =>   $this->transactions,
-            'ring_sizer' => Cmscontent::where('id', 7)->first()
+            'ring_sizer' => Cmscontent::where('id', 7)->first(),
+            'internalProduct' =>   $this->internalProducts
         ];
         return view('admin.dashboard', $data);
     }

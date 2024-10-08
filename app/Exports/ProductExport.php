@@ -2,7 +2,8 @@
 
 namespace App\Exports;
 
-use App\Models\ProductModel;
+use App\Models\SamaProductsModel;
+use App\Models\SamaProductGemstoneDetails;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;

@@ -97,7 +97,7 @@ class ProductImport implements ToCollection, WithHeadingRow
                 $input['metalColor_id'] = $this->getMetalColorIdByName($input['metalcolor']);
                 $input['metalType_id'] = $this->getMetalTypeIdByName($input['metaltype']);
                 if ($input['parent_sku'] == NULL || $input['parent_sku'] === $input['sku']) {
-                    $input['parent_sku'] ='';
+                    // $input['parent_sku'] = '';
                     $input['type'] = 'parent_product';
                 } else {
                     $input['type'] = 'child_product';
@@ -120,21 +120,30 @@ class ProductImport implements ToCollection, WithHeadingRow
                 unset($input['child_sama_sku']);
                 unset($input['product_pg_name']);
                 unset($input['product']);
-                $matchData = ['sku' => $input['sku']];
+                $matchData = ['sku' => $input['sku'], 'parent_sku' => $input['parent_sku'], 'fractionsemimount' => $input['fractionsemimount']];
                 $product = ProductModel::where($matchData)->first();
-
                 if ($product) {
-                    // Update the product
-                    // $product->update(['category_id'=>$categoryId,'subcategory_ids'=>implode(',', $subcategoryIds)]);
                     $saved = $product->update($input);
                     if (!$saved) {
                         $stat = 'false';
                     }
                 } else {
                     // Create a new product
-                    $saved = ProductModel::create($input);
-                    if (!$saved) {
-                        $stat = 'false';
+                    // $condition = ['fractionsemimount' => $input['fractionsemimount'],'parent_sku'=>$input['parent_sku']];
+                    $condition = [
+                        'fractionsemimount' => $input['fractionsemimount'],
+                        !empty($input['parent_sku'])?'parent_sku':'sku' =>  !empty($input['parent_sku'])?$input['parent_sku']:$input['sku'],
+                    ];
+
+                    // echo "<pre>";
+                    // var_dump($condition);
+
+                    $check = ProductModel::where($condition)->exists();
+                    if (!$check) {
+                        $saved = ProductModel::create($input);
+                        if (!$saved) {
+                            $stat = 'false';
+                        }
                     }
                 }
                 // var_dump($saved);
