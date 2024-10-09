@@ -23,17 +23,26 @@ class ProductExport implements FromQuery, WithHeadings
     {
         return ProductModel::query()
             ->select([
+                'products.id',
                 'products.sku',
                 'products.parent_sku',
-                //  DB::raw('
-                //     COALESCE(NULLIF(products.parent_sku, ""), products.sku) as parent_sku
-                //  '),
-                'products.internal_sku',
+                // 'products.internal_sku',
+                DB::raw("CONCAT('SA', products.parent_sku) AS prefixed_parent_sku"),
                 DB::raw(
                     '
                     REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, "0"), " ct", ""), " tw", ""), "/", "") AS formatted_fraction'
                 ),
+                'products.internal_sku as internal_sku_copy',
                 'products.fractionsemimount',
+                DB::raw(
+                    '
+                    CASE
+                        WHEN products.fractionsemimount LIKE "%/%"
+                        THEN CAST(SUBSTRING_INDEX(products.fractionsemimount, " ", 1) AS UNSIGNED) /
+                             NULLIF(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(products.fractionsemimount, "/", -1), " ", 1) AS UNSIGNED), 0)
+                        ELSE 0
+                    END AS decimal_value'
+                ),
                 'products.metalType',
                 'products.metalColor',
                 'products.diamondQuality',
@@ -155,11 +164,14 @@ class ProductExport implements FromQuery, WithHeadings
     public function headings(): array
     {
         return $columns = [
-            'sku',
-            'parent sku',
-            'sama sku',
-            'child sama sku',
+            'num',
+            'SAMA INTERNAL PRICE REF',
+            'ON PARENT SKU',
+            'SAMA PARENT SKU',
+            'SAMA CHILD SKU',
+            'SAMA SKU',
             'fractionsemimount',
+            'fractionsemimount_value',
             'metaltype',
             'metalcolor',
             'diamondQuality',
