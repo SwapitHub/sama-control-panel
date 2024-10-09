@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\ProductModel;
 use App\Models\SamaProductsModel;
 use App\Models\SamaProductGemstoneDetails;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -23,9 +24,10 @@ class ProductExport implements FromQuery, WithHeadings
         return ProductModel::query()
             ->select([
                 'products.sku',
-                 DB::raw('
-                    COALESCE(NULLIF(products.parent_sku, ""), products.sku) as parent_sku
-                 '),
+                'products.parent_sku',
+                //  DB::raw('
+                //     COALESCE(NULLIF(products.parent_sku, ""), products.sku) as parent_sku
+                //  '),
                 'products.internal_sku',
                 DB::raw(
                     '

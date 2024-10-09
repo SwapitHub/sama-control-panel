@@ -96,21 +96,19 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 $input['sub_category'] = $response['subcat'];
                 $input['slug'] = $product->generateUniqueSlug(!empty($input['product_browse_pg_name']) ? $input['product_browse_pg_name'] : $input['name']);
 
-                // if ($input['parent_sku'] == $input['sku']) {
-                //     $input['parent_sku'] = NULL;
-                // }
+
                 if ($input['parent_sku'] == NULL || empty($input['parent_sku']) || $input['parent_sku'] === $input['sku']) {
                     $input['parent_sku'] = '';
                     $input['type'] = 'parent_product';
                 } else {
                     $input['type'] = 'child_product';
                 }
-                // $input['internal_sku'] = $input['sku'];
                 $input['internal_sku'] = $this->convertToSamaSku(['sku' => $input['sku'], 'fractionsemimount' => $input['fractionsemimount']]);
                 $input['videos'] = ($input['videos'] != null) ? $product->sortVideos($input['videos']) : null;
                 $input['images'] = (!empty($input['images'])) ? json_encode(explode(',', $input['images'])) : null;
                 $input['metalType_id'] = $this->getMetalTypeIdByName('18 Kt');
                 $input['metalColor_id'] = $this->getMetalColorIdByName($input['metalcolor']);
+                $input['bandwidth'] = isset($input['bandwidth_mm'])?$input['bandwidth_mm']:$input['bandwidth'];
                 $input['status'] = 'true';
                 unset($input['subcategory']);
                 unset($input['sama_sku']);
@@ -118,23 +116,14 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 unset($input['product_pg_name']);
                 unset($input['product']);
 
-                $matchData = ['sku' => $input['sku'], 'fractionsemimount' => $input['fractionsemimount']];
+                $matchData = ['sku' => $input['sku']];
                 $product = ProductModel::where($matchData)->first();
-
                 if ($product) {
-                    // Update the product
-                    // $product->update(['category_id'=>$categoryId,'subcategory_ids'=>implode(',', $subcategoryIds)]);
                     $saved = $product->update($input);
                     if (!$saved) {
                         $stat = 'false';
                     }
                 } else {
-                    // Create a new product
-                    // $saved = ProductModel::create($input);
-                    // if (!$saved) {
-                    //     $stat = 'false';
-                    // }
-                    // $condition = ['fractionsemimount' => $input['fractionsemimount'],'parent_sku'=>$input['parent_sku']];
                     $condition = [
                         'fractionsemimount' => $input['fractionsemimount'],
                         !empty($input['parent_sku']) ? 'parent_sku' : 'sku' =>  !empty($input['parent_sku']) ? $input['parent_sku'] : $input['sku'],
