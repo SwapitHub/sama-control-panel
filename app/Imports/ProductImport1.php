@@ -116,6 +116,28 @@ class ProductImport1 implements ToCollection, WithHeadingRow
                 unset($input['product_pg_name']);
                 unset($input['product']);
 
+                unset($input['gemstoneweight1']);
+                unset($input['GemstoneWeight8_Min']);
+                unset($input['GemstoneWeight8_Max']);
+                unset($input['NoOfGemstones9_Min']);
+                unset($input['NoOfGemstones9_Max']);
+                unset($input['GemstoneWeight9_Min']);
+                unset($input['GemstoneWeight9_Max']);
+                unset($input['NoOfGemstones10_Min']);
+                unset($input['NoOfGemstones10_Max']);
+                unset($input['GemstoneWeight10_Min']);
+                unset($input['GemstoneWeight10_Max']);
+                unset($input['bandwidth']);
+                unset($input['GemstoneWeight2']);
+                unset($input['GemstoneWeight3']);
+                unset($input['GemstoneWeight4']);
+                unset($input['GemstoneWeight5']);
+                unset($input['GemstoneWeight6']);
+                unset($input['GemstoneWeight7']);
+                unset($input['GemstoneWeight8']);
+                unset($input['GemstoneWeight9']);
+                unset($input['GemstoneWeight10']);
+
                 $matchData = ['sku' => $input['sku']];
                 $product = ProductModel::where($matchData)->first();
                 if ($product) {
