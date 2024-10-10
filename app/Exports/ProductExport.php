@@ -32,7 +32,8 @@ class ProductExport implements FromQuery, WithHeadings
                     '
                     REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, "0"), " ct", ""), " tw", ""), "/", "") AS formatted_fraction'
                 ),
-                'products.internal_sku as internal_sku_copy',
+                DB::raw("CONCAT('SA', products.sku, '-', REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, '0'), ' ct', ''), ' tw', ''), '/','')) AS sku_with_fraction"),
+                // 'products.internal_sku as internal_sku_copy',
                 'products.fractionsemimount',
                 DB::raw(
                     '
