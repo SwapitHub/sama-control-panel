@@ -18,12 +18,28 @@ class VDBController extends Controller
         $this->apiKey = env('VDB_API_KEY');
     }
 
+
     // public function diamonds(Request $request)
     // {
     //     $vdb_url = 'https://apiservices.vdbapp.com/v2/diamonds';
     //     $parameters = $request->query();
-    //     $query_string = http_build_query($parameters);
-    //     $full_url = $vdb_url . '?' . $query_string;
+    //     $query_parts = [];
+    //     foreach ($parameters as $key => $value) {
+    //         if (is_array($value)) {
+    //             foreach ($value as $item) {
+    //                 $query_parts[] = $key . '[]=' . urlencode($item);
+    //             }
+    //         } else {
+    //             $query_parts[] = $key . '=' . urlencode($value);
+    //         }
+    //     }
+
+    //     if (!empty($query_parts)) {
+    //         $full_url = $vdb_url . '?' . implode('&', $query_parts);
+    //     } else {
+    //         $full_url = $vdb_url;
+    //     }
+
     //     $curl = curl_init();
     //     curl_setopt_array($curl, array(
     //         CURLOPT_URL => $full_url,
@@ -41,52 +57,88 @@ class VDBController extends Controller
 
     //     $response = curl_exec($curl);
     //     curl_close($curl);
-    //     // echo $response;
+
     //     return response($response)
-    //     ->header('Content-Type', 'application/json')
-    //     ->header('Access-Control-Allow-Origin', '*') // Allow all origins or specify your frontend domain
-    //     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-    //     ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+    //         ->header('Content-Type', 'application/json')
+    //         ->header('Access-Control-Allow-Origin', '*')
+    //         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    //         ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
     // }
+
+
 
     public function diamonds(Request $request)
     {
         $vdb_url = 'https://apiservices.vdbapp.com/v2/diamonds';
-        $parameters = $request->query();
-        $query_parts = [];
-        foreach ($parameters as $key => $value) {
-            if (is_array($value)) {
-                foreach ($value as $item) {
-                    $query_parts[] = $key . '[]=' . urlencode($item);
+        $cacheKey = 'diamonds_' . md5(http_build_query($request->query()));
+
+        $cachedResponse = Cache::get($cacheKey);
+        if ($cachedResponse) {
+            return response($cachedResponse)
+                ->header('Content-Type', 'application/json')
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        }
+
+        // If no cache is available, make the API request
+        $response = Cache::remember($cacheKey, 86400, function () use ($request, $vdb_url) {
+            $parameters = $request->query();
+            $query_parts = [];
+            foreach ($parameters as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $item) {
+                        $query_parts[] = $key . '[]=' . urlencode($item);
+                    }
+                } else {
+                    $query_parts[] = $key . '=' . urlencode($value);
                 }
-            } else {
-                $query_parts[] = $key . '=' . urlencode($value);
             }
+
+            $full_url = !empty($query_parts) ? $vdb_url . '?' . implode('&', $query_parts) : $vdb_url;
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $full_url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Token token=$this->apiToken, api_key=$this->apiKey"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            if ($response === false) {
+                $error = curl_error($curl);
+                Log::error('cURL Error: ' . $error);  // Log the error for debugging
+
+                // Return null so Cache::remember doesn't cache a failed response
+                return null;
+            }
+
+            // Handle HTTP response code
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
+
+            if ($httpCode !== 200) {
+                Log::error("Third-party API returned status code: $httpCode");
+                return null;
+            }
+
+            return $response;  // Return the API response if successful
+        });
+
+        if (!$response) {
+            return response()->json([
+                'res' => 'error',
+                'msg' => 'Failed to retrieve data from the third-party API and no cached data is available.'
+            ], 500);
         }
-
-        if (!empty($query_parts)) {
-            $full_url = $vdb_url . '?' . implode('&', $query_parts);
-        } else {
-            $full_url = $vdb_url;
-        }
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $full_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: Token token=$this->apiToken, api_key=$this->apiKey"
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        curl_close($curl);
 
         return response($response)
             ->header('Content-Type', 'application/json')
@@ -99,12 +151,27 @@ class VDBController extends Controller
 
     // public function gemstones(Request $request)
     // {
-    //     $vdb_url = 'https://apiservices.vdbapp.com//v2/gemstones';
+    //     $vdb_url = 'https://apiservices.vdbapp.com/v2/gemstones';
     //     $parameters = $request->query();
-    //     $query_string = http_build_query($parameters);
-    //     $full_url = $vdb_url . '?' . $query_string;
-    //     $curl = curl_init();
+    //     $query_parts = [];
 
+
+    //     foreach ($parameters as $key => $value) {
+    //         if (is_array($value)) {
+    //             foreach ($value as $item) {
+    //                 $query_parts[] = $key . '[]=' . urlencode($item);
+    //             }
+    //         } else {
+    //             $query_parts[] = $key . '=' . urlencode($value);
+    //         }
+    //     }
+    //     if (!empty($query_parts)) {
+    //         $full_url = $vdb_url . '?' . implode('&', $query_parts);
+    //     } else {
+    //         $full_url = $vdb_url;
+    //     }
+
+    //     $curl = curl_init();
     //     curl_setopt_array($curl, array(
     //         CURLOPT_URL => $full_url,
     //         CURLOPT_RETURNTRANSFER => true,
@@ -121,54 +188,85 @@ class VDBController extends Controller
 
     //     $response = curl_exec($curl);
     //     curl_close($curl);
-    //     // echo $response;
+
     //     return response($response)
     //         ->header('Content-Type', 'application/json')
-    //         ->header('Access-Control-Allow-Origin', '*') // Allow all origins or specify your frontend domain
+    //         ->header('Access-Control-Allow-Origin', '*')
     //         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     //         ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
     // }
 
+
     public function gemstones(Request $request)
     {
         $vdb_url = 'https://apiservices.vdbapp.com/v2/gemstones';
-        $parameters = $request->query();
-        $query_parts = [];
+        $cacheKey = 'gemstones_' . md5(http_build_query($request->query()));
 
-
-        foreach ($parameters as $key => $value) {
-            if (is_array($value)) {
-                foreach ($value as $item) {
-                    $query_parts[] = $key . '[]=' . urlencode($item);
+        $cachedResponse = Cache::get($cacheKey);
+        if ($cachedResponse) {
+            return response($cachedResponse)
+                ->header('Content-Type', 'application/json')
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
+        }
+        $response = Cache::remember($cacheKey, 86400, function () use ($request, $vdb_url) {
+            $parameters = $request->query();
+            $query_parts = [];
+            foreach ($parameters as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $item) {
+                        $query_parts[] = $key . '[]=' . urlencode($item);
+                    }
+                } else {
+                    $query_parts[] = $key . '=' . urlencode($value);
                 }
-            } else {
-                $query_parts[] = $key . '=' . urlencode($value);
             }
+
+            $full_url = !empty($query_parts) ? $vdb_url . '?' . implode('&', $query_parts) : $vdb_url;
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $full_url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Token token=$this->apiToken, api_key=$this->apiKey"
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            // Handle cURL errors
+            if ($response === false) {
+                $error = curl_error($curl);
+                Log::error('cURL Error: ' . $error);
+                return null;
+            }
+
+            // Handle HTTP response code
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
+
+            if ($httpCode !== 200) {
+                Log::error("Third-party API returned status code: $httpCode");
+
+                return null;
+            }
+
+            return $response;
+        });
+        if (!$response) {
+            return response()->json([
+                'res' => 'error',
+                'msg' => 'Failed to retrieve data from the third-party API and no cached data is available.'
+            ], 500);
         }
-        if (!empty($query_parts)) {
-            $full_url = $vdb_url . '?' . implode('&', $query_parts);
-        } else {
-            $full_url = $vdb_url;
-        }
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $full_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: Token token=$this->apiToken, api_key=$this->apiKey"
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        curl_close($curl);
-
         return response($response)
             ->header('Content-Type', 'application/json')
             ->header('Access-Control-Allow-Origin', '*')
