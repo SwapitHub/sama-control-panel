@@ -120,6 +120,7 @@ class ProductImport implements ToCollection, WithHeadingRow
                 unset($input['child_sama_sku']);
                 unset($input['product_pg_name']);
                 unset($input['product']);
+
                 $matchData = ['sku' => $input['sku'], 'parent_sku' => $input['parent_sku'], 'fractionsemimount' => $input['fractionsemimount']];
                 $product = ProductModel::where($matchData)->first();
                 if ($product) {

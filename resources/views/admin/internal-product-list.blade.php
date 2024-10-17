@@ -50,10 +50,12 @@
                                                 <option value="all"
                                                     {{ request()->input('type') == 'all' ? 'selected' : '' }}>All</option>
                                                 <option value="parent_product"
-                                                    {{ request()->input('type') == 'parent_product' ? 'selected' : '' }}>Parent
+                                                    {{ request()->input('type') == 'parent_product' ? 'selected' : '' }}>
+                                                    Parent
                                                     Product</option>
                                                 <option value="child_product"
-                                                    {{ request()->input('type') == 'child_product' ? 'selected' : '' }}>Child
+                                                    {{ request()->input('type') == 'child_product' ? 'selected' : '' }}>
+                                                    Child
                                                     Product</option>
                                             </select>
                                         </div>
@@ -77,7 +79,6 @@
                                         class="btn btn-primary">Export <i class="fa fa-download"></i></a>
                                 </div>
                             </div>
-
                         </div>
                         <div class="card-body">
                             <div class="table-responsive table-desi">
@@ -87,8 +88,8 @@
                                             <th>Name</th>
                                             <th>Sku</th>
                                             <th>on parent sku</th>
-                                            <th>Sama Sku</th>
-                                            <th>sama parent sku </th>
+                                            {{-- <th>Sama Sku</th>
+                                            <th>sama parent sku </th> --}}
                                             <th>fractionsemimount</th>
 
 
@@ -96,14 +97,14 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($list as $index => $item)
+
                                             <tr>
 
 
-                                                <td>{{ $item->product_pg_name }}</td>
-                                                <td>{{ $item->sku }}</td>
-                                                <td>{{ $item->on_parent_sku }}</td>
+                                                <td>{{ $item->name }}</td>
                                                 <td>{{ $item->sama_sku }}</td>
                                                 <td>{{ $item->sama_parent_sku }}</td>
+
                                                 <td>{{ $item->fractionsemimount }}</td>
 
 
@@ -146,7 +147,16 @@
                         @csrf
                         <div class="modal-body">
                             <div class="form-group">
-                                <input type="file" name="sama_products" class="form-control" accept=".xlsx, .xls, .csv">
+                                <label for="">Menu</label>
+                                <select name="menu" id="" required class="form-control">
+                                    <option selected disabled>choose menu</option>
+                                    @foreach ($menus  as $menu)
+                                        <option value="{{ $menu->name }}">{{ $menu->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="file" name="excel_file" class="form-control" accept=".xlsx, .xls, .csv">
                                 <span class="errors"></span>
                             </div>
                         </div>
@@ -160,6 +170,5 @@
         </div>
 
         @push('scripts')
-
         @endpush
     @endsection

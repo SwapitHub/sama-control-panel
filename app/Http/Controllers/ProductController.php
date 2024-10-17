@@ -18,10 +18,12 @@ use App\Models\CenterStone;
 use App\Models\DiamondShape;
 use App\Imports\SamaProductsImport;
 use App\Imports\ProductImport;
+use App\Imports\InternalProductImport;
 use App\Models\ProductImageModel;
 use App\Imports\ProductImport1;
 use App\Imports\PriceImport;
 use App\Exports\ProductExport;
+use App\Exports\InternalProductExport;
 use App\Exports\PriceExport;
 use App\Exports\SamaProducts;
 use Maatwebsite\Excel\Facades\Excel;
@@ -333,6 +335,7 @@ class ProductController extends Controller
     public function exportProduct()
     {
         return Excel::download(new ProductExport, 'products.csv', \Maatwebsite\Excel\Excel::CSV);
+        // return Excel::download(new InternalProductExport, 'products.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function exportPrice()
@@ -741,6 +744,7 @@ class ProductController extends Controller
         if (!empty($request->menu)) {
             if ($request->menu == 'ENGAGEMENT RINGS') {
                 $productImport = new ProductImport($request->menu);
+                // $productImport = new InternalProductImport($request->menu);
                 $res = Excel::import($productImport, $request->file('excel_file'));
             } else {
                 $productImport = new ProductImport1($request->menu);
