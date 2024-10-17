@@ -127,7 +127,7 @@
 
                                                 {{-- <td><a href="{{ url('/db-product-list/edit') }}/{{ getProductIdBasedOnSku(!is_null($item->parent_sku)?$item->parent_sku:$item->sku) }}" style="text-decoration: underline; color:blue !important">{{ !is_null($item->parent_sku)?$item->parent_sku:$item->sku }}</a></td> --}}
                                                 <td>{{ $item->name }}</td>
-                                                <td>{{ $item->internal_sku }}</td>
+                                                <td>{{ $item->sama_sku }}</td>
                                                 <td>{{ $item->type == 'parent_product' ? 'Parent Product' : 'Child Product' }}
                                                     <br>
                                                     <a href="{{ url($prifix.'/db-product-list/edit') }}/{{ getProductIdBasedOnSku(!is_null($item->parent_sku) ? $item->parent_sku : $item->sku) }}"
