@@ -85,9 +85,9 @@
                                 </div>
                                 <div class="col-md-4 float-right">
                                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">import <i class="fa fa-upload"></i></button>
+                                        data-bs-target="#exampleModal">ON Import <i class="fa fa-upload"></i></button>
                                     <a href="{{ route('admin.product.export') }}" type="button"
-                                        class="btn btn-secondary">Export <i class="fa fa-download"></i></a>
+                                        class="btn btn-secondary">ON Export <i class="fa fa-download"></i></a>
                                 </div>
                             </div>
                             <div class="row mt-3">
