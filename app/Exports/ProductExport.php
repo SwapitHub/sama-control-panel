@@ -119,8 +119,8 @@ class ProductExport implements FromQuery, WithHeadings
                 // 'products.GemstoneWeight8',
                 'products.GemstoneWeight8_Min',
                 'products.FingerSize',
-                'products.bandwidth',
-                'products.bandweight',
+                // 'products.bandwidth',
+                // 'products.bandweight',
                 'product_subcategory.name as category',
                 DB::raw('
                 CONCAT(
@@ -231,8 +231,8 @@ class ProductExport implements FromQuery, WithHeadings
             // 'GemstoneWeight8',
             'GemstoneWeight8_Min',
             'FingerSize',
-            'bandwidth (mm)',
-            'bandweight',
+            // 'bandwidth (mm)',
+            // 'bandweight',
             'CATEGORY',
             'SUBCATEGORY',
             'PRODUCT BROWSE PG NAME',
