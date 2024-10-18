@@ -28,16 +28,12 @@ class UpdateSamaSku extends Command
      */
     public function handle()
     {
-        // Run the update query
-        DB::table('products') // Replace with your actual table name
+        DB::table('products')
             ->update([
-                // 'sama_sku' => DB::raw("CONCAT('SA', products.sku, '-', REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, '0'), ' ct', ''), ' tw', ''), '/',''))")
-                'sama_sku' => DB::raw("TRIM(CONCAT('SA', products.sku, '-', REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, '0'), ' ct', ''), ' tw', ''), '/','')))")
+                'sama_sku' => DB::raw("CONCAT('SA', products.sku, '-', REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, '0'), ' ct', ''), ' tw', ''), '/',''))")
+                // 'sama_sku' => DB::raw("TRIM(CONCAT('SA', products.sku, '-', REPLACE(REPLACE(REPLACE(COALESCE(products.fractionsemimount, '0'), ' ct', ''), ' tw', ''), '/','')))")
             ]);
-
-        // Output a message to indicate the command has run successfully
         $this->info('sama_sku field updated successfully.');
-
         return 0;
     }
 }

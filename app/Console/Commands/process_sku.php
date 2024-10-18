@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\ProductModel;
 
 class process_sku extends Command
 {
@@ -11,7 +12,7 @@ class process_sku extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'update:skus';
 
     /**
      * The console command description.
@@ -37,6 +38,40 @@ class process_sku extends Command
      */
     public function handle()
     {
-        return 0;
+        $products = ProductModel::get();
+        foreach($products as $product)
+        {
+           $res = $this->changeSamaSKU($product['sku'],$product['fractionsemimount']);
+           ProductModel::where('sku',$product['sku'])->update(['sama_sku'=>$res]);
+           $this->info($product['sku'].' updated to ' .$res. ' sama_sku sku  updated successfully.');
+        }
+    }
+
+
+    public function changeSamaSKU($sku, $fractionsemimount)
+    {
+        if ($fractionsemimount != NULL) {
+            $fractionsemimount_cleaned = str_replace(['ct', 'tw', '/'], '', $fractionsemimount);
+            $fractionsemimount_cleaned = trim($fractionsemimount_cleaned);
+        } else {
+            $fractionsemimount_cleaned = '000';
+        }
+
+        $sama_parts = explode('-', $sku);
+
+        if (count($sama_parts) == 4) {
+            return 'SA'.$sama_parts[0] . '-' . $sama_parts[1] . '-' . $fractionsemimount_cleaned;
+
+        } elseif (count($sama_parts) == 3) {
+            return 'SA'.$sama_parts[0] . '-' . $sama_parts[1] . '-' . $fractionsemimount_cleaned;
+
+        } elseif (count($sama_parts) == 2 && preg_match('/[a-zA-Z]/', $sama_parts[1])) {
+            return 'SA'.$sama_parts[0] . '-' . $sama_parts[1] . '-' . $fractionsemimount_cleaned;
+
+        } elseif (count($sama_parts) == 2) {
+            return 'SA'.$sama_parts[0] . '-' . $fractionsemimount_cleaned;
+        } else {
+            return 'SA'.$sku;
+        }
     }
 }
