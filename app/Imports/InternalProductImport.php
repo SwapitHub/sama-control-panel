@@ -118,6 +118,7 @@ class InternalProductImport implements ToCollection, WithHeadingRow
                     'sama_sku' => $input['sama_sku'],
                     'sama_parent_sku' => $input['sama_parent_sku'],
                     'fractionsemimount' => $input['fractionsemimount'],
+                    'fractionsemimount_value' => $input['fractionsemimount_value'],
                     'metalType' => $input['metaltype'],
                     'metalColor' => $input['metalcolor'],
                     'diamondQuality' => $input['diamondquality'],

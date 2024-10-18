@@ -13,6 +13,8 @@ use App\Imports\SamaProductsImport;
 use App\Imports\InternalProductImport;
 use App\Imports\InternalProductImportW;
 use App\Exports\SamaProducts;
+use App\Exports\InternalProductExport;
+
 use App\Models\Menu;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -69,6 +71,6 @@ class SamaProductController extends Controller
 
     public function exportProducts()
     {
-        return Excel::download(new SamaProducts, 'internal-products.csv', \Maatwebsite\Excel\Excel::CSV);
+        return Excel::download(new InternalProductExport, 'internal-products.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 }
