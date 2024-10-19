@@ -93,7 +93,7 @@ class InternalProductImport implements ToCollection, WithHeadingRow
                 $metalColor_id = $this->getMetalColorIdByName($input['metalcolor']);
                 $metalType_id = $this->getMetalTypeIdByName($input['metaltype']);
 
-                if ($input['sama_sku'] == NULL) {
+                if ($input['sama_parent_sku'] == NULL) {
                     $type = 'parent_product';
                 } else {
                     $type = 'child_product';
