@@ -102,35 +102,33 @@ class InternalProductImportW implements ToCollection, WithHeadingRow
 
 
 
-                $metalColor_id = $this->getMetalColorIdByName($input['metalcolor']);
-                $metalType_id = $this->getMetalTypeIdByName($input['metaltype']);
-                if ($input['on_parent_sku'] == NULL || $input['on_parent_sku'] === $input['sama_internal_price_ref']) {
+                $metalColor_id = $this->getMetalColorIdByName(isset($input['metalcolor'])?$input['metalcolor']:'White');
+                $metalType_id = $this->getMetalTypeIdByName(isset($input['metaltype'])?$input['metaltype']:'14KT Gold');
+                if ($input['sama_parent_sku'] == NULL) {
                     $type = 'parent_product';
                 } else {
                     $type = 'child_product';
                 }
-                $images_arr = [];
-                $images = explode(',', $input['images']);
-                foreach ($images as $img) {
-                    $images_arr[] = $img;
-                }
-                $sama_sku = $this->convertToSamaSku(['sku' => $input['sama_internal_price_ref'], 'fractionsemimount' => $input['fractionsemimount']]);
-
+                // $images_arr = [];
+                // $images = explode(',', $input['images']);
+                // foreach ($images as $img) {
+                //     $images_arr[] = $img;
+                // }
                 $generateSlug = new InternalProducts;
                 $slug = $generateSlug->generateUniqueSlug(!empty($input['product_browse_pg_name']) ? $input['product_browse_pg_name'] : $input['name']);
 
-                // generate sama sku and sama parent sku
-
 
                 $insertToProduct = [
-                    'sku' => $input['sama_internal_price_ref'],
-                    'parent_sku' => $input['on_parent_sku'],
-                    'sama_sku' => $this->generateSamaSKU($input['sama_internal_price_ref'], $input['fractionsemimount']),
-                    'sama_parent_sku' => '',
+                    'internal_sku' => $input['sama_sku_preeti'],
+                    'parent_sku' => $input['parent_sku'],
+                    'sama_sku' => $input['sama_sku'],
+                    'sama_parent_sku' => $input['sama_parent_sku']??'',
+                    'sama_child_sku' => $input['sama_child_sku'],
                     'fractionsemimount' => $input['fractionsemimount'],
+                    'fractionsemimount_value' => $input['fractionsemimount_value'],
                     'metalType' => $input['metaltype'],
                     'metalColor' => $input['metalcolor'],
-                    'diamondQuality' => $input['diamondquality'],
+                    'diamondQuality' => $input['diamondquality']??'SI1-SI2, G-H',
                     'centerShape' => $input['centershape'],
                     'SideDiamondNumber' => $input['sidediamondnumber'],
                     'SideDiamondNumber_Min' => isset($input['sidediamondnumber_min']) ? $input['sidediamondnumber_min'] : '',
@@ -148,8 +146,8 @@ class InternalProductImportW implements ToCollection, WithHeadingRow
                     'center_stone_options' => $input['center_stone_options'],
                     'matching_wedding_band' => $input['matching_wedding_band'],
                     'default_image_url' => $input['default_image_url'] ?? '',
-                    'images' => json_encode($images) ?? null,
-                    'videos' => isset($input['videos']) ? $this->sortVideos($input['videos']) : null,
+                    'images' => trim($input['images'])??null,
+                    'videos' => trim($input['videos'])??null,
                     'category_id' => $categoryId,
                     'subcategory_ids' => $subcategory_ids,
                     'menu' => $this->menu_id,
@@ -157,11 +155,21 @@ class InternalProductImportW implements ToCollection, WithHeadingRow
                     'metalColor_id' => $metalColor_id,
                     'metalType_id' => $metalType_id,
                     'type' => $type,
-                    'internal_sku' => $sama_sku,
                     'slug' => $slug,
                 ];
 
-                $condition = ['sku' => $input['sama_internal_price_ref']];
+                // check if price exist in overmount data then update it
+                $overmountProduct = ProductModel::where('sama_sku',$input['sama_sku_preeti']);
+                if($overmountProduct->exists())
+                {
+                    $overmounting  = $overmountProduct->first();
+                    $insertToProduct['white_gold_price']  = $overmounting['white_gold_price'];
+                    $insertToProduct['yellow_gold_price']  = $overmounting['yellow_gold_price'];
+                    $insertToProduct['rose_gold_price']  = $overmounting['rose_gold_price'];
+                    $insertToProduct['platinum_price']  = $overmounting['platinum_price'];
+                }
+
+                $condition = ['sama_sku' => $input['sama_sku']];
                 $product = InternalProducts::updateOrCreate($condition, $insertToProduct);
                 if ($product) {
                     $last_insert_id = $product->id;
@@ -180,73 +188,73 @@ class InternalProductImportW implements ToCollection, WithHeadingRow
                         'NoOfGemstones2' => $input['noofgemstones2'],
                         'NoOfGemstones2_Min' => $input['noofgemstones2_min'],
                         'NoOfGemstones2_Max' => $input['noofgemstones2_max'],
-                        // 'GemstoneCaratWeight2'=>isset($input['gemstonecaratweight1'])?$input['gemstonecaratweight1']:'',
-                        // 'GemstoneCaratWeight2_Min'=>$input['gemstonecaratweight2_min'],
-                        // 'GemstoneCaratWeight2_Max'=>$input['gemstonecaratweight2_max'],
+                        'GemstoneCaratWeight2'=>isset($input['gemstonecaratweight1'])?$input['gemstonecaratweight1']:'',
+                        'GemstoneCaratWeight2_Min'=>$input['gemstonecaratweight2_min'],
+                        'GemstoneCaratWeight2_Max'=>$input['gemstonecaratweight2_max'],
 
                         'GemstoneShape3' => $input['gemstoneshape3'],
                         'NoOfGemstones3' => $input['noofgemstones3'],
                         'NoOfGemstones3_Min' => $input['noofgemstones3_min'],
                         'NoOfGemstones3_Max' => $input['noofgemstones3_max'],
-                        // 'GemstoneCaratWeight3'=>$input['gemstonecaratweight3'],
-                        // 'GemstoneCaratWeight3_Min'=>$input['gemstonecaratweight3_min'],
-                        // 'GemstoneCaratWeight3_Max'=>$input['gemstonecaratweight3_max'],
+                        'GemstoneCaratWeight3'=>$input['gemstonecaratweight3'],
+                        'GemstoneCaratWeight3_Min'=>$input['gemstonecaratweight3_min'],
+                        'GemstoneCaratWeight3_Max'=>$input['gemstonecaratweight3_max'],
 
                         'GemstoneShape4' => $input['gemstoneshape4'],
                         'NoOfGemstones4' => $input['noofgemstones4'],
                         'NoOfGemstones4_Min' => $input['noofgemstones4_min'],
                         'NoOfGemstones4_Max' => $input['noofgemstones4_max'],
-                        // 'GemstoneCaratWeight4'=>$input['gemstonecaratweight4'],
-                        // 'GemstoneCaratWeight4_Min'=>$input['gemstonecaratweight4_min'],
-                        // 'GemstoneCaratWeight4_Max'=>$input['gemstonecaratweight4_max'],
+                        'GemstoneCaratWeight4'=>$input['gemstonecaratweight4'],
+                        'GemstoneCaratWeight4_Min'=>$input['gemstonecaratweight4_min'],
+                        'GemstoneCaratWeight4_Max'=>$input['gemstonecaratweight4_max'],
 
                         'GemstoneShape5' => $input['gemstoneshape5'],
                         'NoOfGemstones5' => $input['noofgemstones5'],
                         'NoOfGemstones5_Min' => $input['noofgemstones5_min'],
                         'NoOfGemstones5_Max' => $input['noofgemstones5_max'],
-                        // 'GemstoneCaratWeight5'=>$input['gemstonecaratweight5'],
-                        // 'GemstoneCaratWeight5_Min'=>$input['gemstonecaratweight5_min'],
-                        // 'GemstoneCaratWeight5_Max'=>$input['gemstonecaratweight5_max'],
+                        'GemstoneCaratWeight5'=>$input['gemstonecaratweight5'],
+                        'GemstoneCaratWeight5_Min'=>$input['gemstonecaratweight5_min'],
+                        'GemstoneCaratWeight5_Max'=>$input['gemstonecaratweight5_max'],
 
                         'GemstoneShape6' => $input['gemstoneshape6'],
                         'NoOfGemstones6' => $input['noofgemstones6'],
                         'NoOfGemstones6_Min' => $input['noofgemstones6_min'],
                         'NoOfGemstones6_Max' => $input['noofgemstones6_max'],
-                        // 'GemstoneCaratWeight6'=>$input['gemstonecaratweight6'],
-                        // 'GemstoneCaratWeight6_Min'=>$input['gemstonecaratweight6_min'],
-                        // 'GemstoneCaratWeight6_Max'=>$input['gemstonecaratweight6_max'],
+                        'GemstoneCaratWeight6'=>$input['gemstonecaratweight6'],
+                        'GemstoneCaratWeight6_Min'=>$input['gemstonecaratweight6_min'],
+                        'GemstoneCaratWeight6_Max'=>$input['gemstonecaratweight6_max'],
 
                         'GemstoneShape7' => $input['gemstoneshape7'],
                         'NoOfGemstones7' => $input['noofgemstones7'],
                         'NoOfGemstones7_Min' => $input['noofgemstones7_min'],
                         'NoOfGemstones7_Max' => $input['noofgemstones7_max'],
-                        // 'GemstoneCaratWeight7'=>$input['gemstonecaratweight7'],
-                        // 'GemstoneCaratWeight7_Min'=>$input['gemstonecaratweight7_min'],
-                        // 'GemstoneCaratWeight7_Max'=>$input['gemstonecaratweight7_max'],
+                        'GemstoneCaratWeight7'=>$input['gemstonecaratweight7'],
+                        'GemstoneCaratWeight7_Min'=>$input['gemstonecaratweight7_min'],
+                        'GemstoneCaratWeight7_Max'=>$input['gemstonecaratweight7_max'],
 
                         'GemstoneShape8' => $input['gemstoneshape8'],
                         'NoOfGemstones8' => $input['noofgemstones8'],
                         'NoOfGemstones8_Min' => $input['noofgemstones8_min'],
                         'NoOfGemstones8_Max' => $input['noofgemstones8_max'],
-                        // 'GemstoneCaratWeight8'=>$input['gemstonecaratweight8'],
-                        // 'GemstoneCaratWeight8_Min'=>$input['gemstonecaratweight8_min'],
-                        // 'GemstoneCaratWeight8_Max'=>$input['gemstonecaratweight8_max'],
+                        'GemstoneCaratWeight8'=>$input['gemstonecaratweight8'],
+                        'GemstoneCaratWeight8_Min'=>$input['gemstonecaratweight8_min'],
+                        'GemstoneCaratWeight8_Max'=>$input['gemstonecaratweight8_max'],
 
                         'GemstoneShape9' => $input['gemstoneshape9'],
                         'NoOfGemstones9' => $input['noofgemstones9'],
                         'NoOfGemstones9_Min' => $input['noofgemstones9_min'],
                         'NoOfGemstones9_Max' => $input['noofgemstones9_max'],
-                        // 'GemstoneCaratWeight9'=>$input['gemstonecaratweight9'],
-                        // 'GemstoneCaratWeight9_Min'=>$input['gemstonecaratweight9_min'],
-                        // 'GemstoneCaratWeight9_Max'=>$input['gemstonecaratweight9_max'],
+                        'GemstoneCaratWeight9'=>$input['gemstonecaratweight9'],
+                        'GemstoneCaratWeight9_Min'=>$input['gemstonecaratweight9_min'],
+                        'GemstoneCaratWeight9_Max'=>$input['gemstonecaratweight9_max'],
 
                         'GemstoneShape10' => $input['gemstoneshape10'],
                         'NoOfGemstones10' => $input['noofgemstones10'],
                         'NoOfGemstones10_Min' => $input['noofgemstones10_min'],
                         'NoOfGemstones10_Max' => $input['noofgemstones10_max'],
-                        // 'GemstoneCaratWeight10'=>$input['gemstonecaratweight10'],
-                        // 'GemstoneCaratWeight10_Min'=>$input['gemstonecaratweight10_min'],
-                        // 'GemstoneCaratWeight10_Max'=>$input['gemstonecaratweight10_max'],
+                        'GemstoneCaratWeight10'=>$input['gemstonecaratweight10'],
+                        'GemstoneCaratWeight10_Min'=>$input['gemstonecaratweight10_min'],
+                        'GemstoneCaratWeight10_Max'=>$input['gemstonecaratweight10_max'],
 
                     ];
                     $checkCondition = ['product_id' => $last_insert_id];

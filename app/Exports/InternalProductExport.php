@@ -24,25 +24,6 @@ class InternalProductExport implements FromQuery, WithHeadings
     {
         return InternalProducts::query()
             ->select([
-                //     'tbl_products.id',
-                //     'tbl_products.sku',
-                //     'tbl_products.parent_sku',
-                //     'tbl_products.sama_parent_sku',
-                //     DB::raw(
-                //         '
-                //         REPLACE(REPLACE(REPLACE(COALESCE(tbl_products.fractionsemimount, "0"), " ct", ""), " tw", ""), "/", "") AS formatted_fraction'
-                //     ),
-                //    'tbl_products.sama_sku',
-                //     'tbl_products.fractionsemimount',
-                //     DB::raw(
-                //         '
-                //         CASE
-                //             WHEN tbl_products.fractionsemimount LIKE "%/%"
-                //             THEN CAST(SUBSTRING_INDEX(tbl_products.fractionsemimount, " ", 1) AS UNSIGNED) /
-                //                  NULLIF(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(tbl_products.fractionsemimount, "/", -1), " ", 1) AS UNSIGNED), 0)
-                //             ELSE 0
-                //         END AS decimal_value'
-                //     ),
                 'tbl_products.parent_sku',
                 'tbl_products.sama_parent_sku',
                 DB::raw("CASE WHEN tbl_products.type = 'parent_product' THEN 'PARENT' ELSE 'CHILD' END AS type"),
@@ -53,15 +34,7 @@ class InternalProductExport implements FromQuery, WithHeadings
                 ),
                 'tbl_products.sama_sku',
                 'tbl_products.fractionsemimount',
-                DB::raw(
-                    '
-                    CASE
-                        WHEN tbl_products.fractionsemimount LIKE "%/%"
-                        THEN CAST(SUBSTRING_INDEX(tbl_products.fractionsemimount, " ", 1) AS UNSIGNED) /
-                             NULLIF(CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(tbl_products.fractionsemimount, "/", -1), " ", 1) AS UNSIGNED), 0)
-                        ELSE 0
-                    END AS decimal_value'
-                ),
+                'tbl_products.fractionsemimount_value',
                 'tbl_products.metalType',
                 'tbl_products.metalColor',
                 'tbl_products.diamondQuality',
@@ -188,14 +161,6 @@ class InternalProductExport implements FromQuery, WithHeadings
     public function headings(): array
     {
         return $columns = [
-            // 'num',
-            // 'SAMA INTERNAL PRICE REF',
-            // 'ON PARENT SKU',
-            // 'SAMA PARENT SKU',
-            // 'SAMA CHILD SKU',
-            // 'SAMA SKU',
-            // 'fractionsemimount',
-            // 'fractionsemimount_value',
             'PARENT SKU',
             'SAMA PARENT',
             'PARENT_CHILD',

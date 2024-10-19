@@ -59,9 +59,9 @@ class SamaProductController extends Controller
             $importStatus = $productImport->getImportStatus();
             // var_dump($importStatus);
             if ($importStatus['is_updated'] == 'true') {
-                return redirect()->route('admin.product.dblist')->with('success', 'Product imported successfully');
+                return redirect()->route('sama.internal-product.list')->with('success', 'Product imported successfully');
             } else {
-                return redirect()->route('admin.product.dblist')->with('success', 'Something went wrong');
+                return redirect()->route('sama.internal-product.list')->with('success', 'Something went wrong');
             }
 
         } else {
