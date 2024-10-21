@@ -82,7 +82,7 @@ class VDBController extends Controller
         }
 
         // If no cache is available, make the API request
-        $response = Cache::remember($cacheKey, 86400, function () use ($request, $vdb_url) {
+        $response = Cache::remember($cacheKey, 18000, function () use ($request, $vdb_url) {
             $parameters = $request->query();
             $query_parts = [];
             foreach ($parameters as $key => $value) {
@@ -210,7 +210,7 @@ class VDBController extends Controller
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
                 ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
         }
-        $response = Cache::remember($cacheKey, 86400, function () use ($request, $vdb_url) {
+        $response = Cache::remember($cacheKey, 18000, function () use ($request, $vdb_url) {
             $parameters = $request->query();
             $query_parts = [];
             foreach ($parameters as $key => $value) {
