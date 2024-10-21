@@ -81,8 +81,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/invoice/{order_id}', [App\Http\Controllers\InvoiceController::class, 'invoicePdf'])->name('sale.orders.invoice.download');
     Route::any('check', [App\Http\Controllers\API\MenuController::class, 'check']);
     Route::any('cms-metadata', [App\Http\Controllers\API\MenuController::class, 'cmsMetaData']);
-    Route::any('vdb-diamonds', [App\Http\Controllers\API\VDBController::class, 'diamonds']);
-    Route::any('vdb-gemstones', [App\Http\Controllers\API\VDBController::class, 'gemstones']);
+    Route::any('sama-diamonds', [App\Http\Controllers\API\VDBController::class, 'diamonds']);
+    Route::any('sama-gemstones', [App\Http\Controllers\API\VDBController::class, 'gemstones']);
     // });
 });
 
