@@ -293,7 +293,7 @@ class ProductController extends Controller
                 $videos_by_color  = [];
                 foreach ($pro_videos as $product_vid) {
                     $color = $product_vid['color'];
-                    $video_path = env('AWS_URL') . 'images_and_videos/videos/' . $product['entity_id'] . '/' . $product_vid['entity_id'];
+                    $video_path = env('AWS_URL') . 'images_and_videos/videos/' . $product['entity_id'] . '/' . $product_vid['video_path'];
 
                     $videos_by_color[$color] = $video_path;
                 }
@@ -348,6 +348,8 @@ class ProductController extends Controller
                 $product['similar_products'] = json_encode($this->getSimilarProducts($product['similar_products']));
             }
 
+
+            // dd($product['sama_parent_sku']);
 
             if ($product['sama_parent_sku'] != NULL || !empty($product['sama_parent_sku']) || $product['sama_parent_sku'] != '' ) {
                 $var = InternalProducts::where('sama_parent_sku', $product['sama_parent_sku'])->get();
