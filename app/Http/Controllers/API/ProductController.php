@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductModel;
+use App\Models\InternalProducts;
 use App\Models\Subcategory;
 use App\Models\DiamondShape;
 use App\Models\ProductPrice;
@@ -14,6 +15,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductSubcategory;
 use App\Models\CenterStone;
 use App\Models\Menu;
+use App\Models\SamaPrices;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -82,16 +84,15 @@ class ProductController extends Controller
 
         $output['res'] = 'success';
         $output['msg'] = 'data retrieved successfully';
-        $products = ProductModel::where('menu', 7)
+        $products = InternalProducts::where('menu', 7)
             ->where(function ($query) {
-                $query->whereNull('products.parent_sku')
-                    ->orWhere('products.parent_sku', '')
-                    ->orWhereColumn('products.sku', 'products.parent_sku');
+                $query->whereNull('tbl_products.sama_parent_sku')
+                    ->orWhere('tbl_products.sama_parent_sku', '');
             })
-            ->where('products.status', 'true');
+            ->where('tbl_products.status', 'true');
         // Apply the bridal sets filter
         if ($request->bridal_sets == 'true') {
-            $products->whereNotNull('products.matching_wedding_band');
+            $products->whereNotNull('tbl_products.matching_wedding_band');
         }
 
         // Apply sorting based on request
@@ -99,20 +100,20 @@ class ProductController extends Controller
             $sortBy = $request->query('sortby');
             if ($sortBy == 'low_to_high') {
                 // $products->orderBy('product_price.price', 'asc');
-                $products->orderByRaw("CAST(products.white_gold_price AS DECIMAL(12, 4)) ASC");
+                $products->orderByRaw("CAST(tbl_products.white_gold_price AS DECIMAL(12, 4)) ASC");
             } elseif ($sortBy == 'high_to_low') {
                 // $products->orderBy('product_price.price', 'desc');
-                $products->orderByRaw("CAST(products.white_gold_price AS DECIMAL(12, 4)) DESC");
+                $products->orderByRaw("CAST(tbl_products.white_gold_price AS DECIMAL(12, 4)) DESC");
             } elseif ($sortBy == 'Newest') {
-                $products->orderBy('products.created_at', 'DESC');
+                $products->orderBy('tbl_products.created_at', 'DESC');
             } elseif ($sortBy == 'best_seller') {
-                $products->where('products.is_bestseller', '1');
+                $products->where('tbl_products.is_bestseller', '1');
             }
         }
 
         // Apply additional filters
         if (!is_null($request->query('shape'))) {
-            $products->where('products.CenterShape', strtoupper(trim($request->query('shape'))));
+            $products->where('tbl_products.CenterShape', strtoupper(trim($request->query('shape'))));
         }
 
         if (!is_null($request->query('ring_style'))) {
@@ -125,7 +126,7 @@ class ProductController extends Controller
             if (!empty($subcatIds)) {
                 $products->where(function ($query) use ($subcatIds) {
                     foreach ($subcatIds as $id) {
-                        $query->orWhereRaw("FIND_IN_SET(?, products.sub_category)", [$id]);
+                        $query->orWhereRaw("FIND_IN_SET(?, tbl_products.sub_category)", [$id]);
                     }
                 });
             }
@@ -139,7 +140,7 @@ class ProductController extends Controller
             if (!empty($subcatIds)) {
                 $products->where(function ($query) use ($subcatIds) {
                     foreach ($subcatIds as $id) {
-                        $query->orWhereRaw("FIND_IN_SET(?, products.subcategory_ids)", [$id]);
+                        $query->orWhereRaw("FIND_IN_SET(?, tbl_products.subcategory_ids)", [$id]);
                     }
                 });
             }
@@ -155,14 +156,14 @@ class ProductController extends Controller
 
         if (!is_null($request->query('metal_color'))) {
             $metalcolor_id = $request->query('metal_color');
-            $products->where('products.metalColor_id', $metalcolor_id);
+            $products->where('tbl_products.metalColor_id', $metalcolor_id);
         }
 
         if (!is_null($request->query('price_range'))) {
             $range = explode(',', $request->query('price_range'));
             $min = $range[0];
             $max = $range[1];
-            $products->whereBetween('products.white_gold_price', [$min, $max]);
+            $products->whereBetween('tbl_products.white_gold_price', [$min, $max]);
         }
 
         ## Apply filters for diamond_type and metalColor
@@ -170,12 +171,14 @@ class ProductController extends Controller
         //     ->where('products.metalColor', 'White');    // Filter for White metalColor
 
         ## Count the filtered results
-        $products->select('id', 'name', 'product_browse_pg_name', 'slug', 'sku', 'internal_sku', 'menu', 'category_id', 'subcategory_ids', 'white_gold_price', 'yellow_gold_price', 'rose_gold_price', 'platinum_price', 'default_image_url', 'images','is_bestseller','created_at');
+        $products->select('id', 'name', 'product_browse_pg_name', 'slug', 'sama_sku', 'entity_id', 'menu', 'category_id', 'subcategory_ids', 'white_gold_price', 'yellow_gold_price', 'rose_gold_price', 'platinum_price', 'default_image_url', 'images','is_bestseller','created_at');
         $actual_count = $products->count();
 
         // Retrieve the products if needed (for pagination or display)
         $productsList = $products->paginate(30);
         $count = $productsList->count();
+
+
 
         if ($count) {
             $productList = [];
@@ -186,14 +189,14 @@ class ProductController extends Controller
                 $path = parse_url($product->default_image_url, PHP_URL_PATH);
                 $extension = pathinfo($path, PATHINFO_EXTENSION);
                 ## create image
-                $defaulImg = env('AWS_URL') . 'products/images/' . $product->internal_sku . '/' . $product->internal_sku . '.' . $extension;
+                $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $product->entity_id . '/' . $product->entity_id . '.' . $extension;
                 $product->default_image_url = $defaulImg;
                 ## product images
                 $pro_images =  ProductImageModel::where('product_id', $product['id'])->get();
                 $images_arr = [];
                 if (count($pro_images) > 0) {
                     foreach ($pro_images as $product_img) {
-                        $pimg =   env('AWS_URL') . 'products/images/' . $product['internal_sku'] . '/' . $product_img['image_path'];
+                        $pimg =   env('AWS_URL') . 'images_and_videos/images/' . $product['entity_id'] . '/' . $product_img['image_path'];
                         $images_arr[] = $pimg;
                     }
                 } else {
@@ -203,7 +206,7 @@ class ProductController extends Controller
                 ## product image
 
                 // Get the prices based on different criteria
-                $white_gold_price = ProductPrice::where('product_sku', $product['sku'])
+                $white_gold_price = SamaPrices::where('product_id', $product['id'])
                     ->where('metalType', '18kt')
                     ->where('metalColor', 'White')
                     ->where('diamond_type', 'natural')
@@ -211,7 +214,7 @@ class ProductController extends Controller
                     ->price ?? 0;
                 $product->white_gold_price = round($white_gold_price, 0);
 
-                $yellow_gold_price = ProductPrice::where('product_sku', $product['sku'])
+                $yellow_gold_price = SamaPrices::where('product_id', $product['id'])
                     ->where('metalType', '18kt')
                     ->where('metalColor', 'Yellow')
                     ->where('diamond_type', 'natural')
@@ -220,7 +223,7 @@ class ProductController extends Controller
 
                 $product->yellow_gold_price = round($yellow_gold_price, 0);
 
-                $rose_gold_price = ProductPrice::where('product_sku', $product['sku'])
+                $rose_gold_price = SamaPrices::where('product_id', $product['id'])
                     ->where('metalType', '18kt')
                     ->where('metalColor', 'Pink')
                     ->where('diamond_type', 'natural')
@@ -228,7 +231,7 @@ class ProductController extends Controller
                     ->price ?? 0;
                 $product->rose_gold_price = round($rose_gold_price, 0);
 
-                $platinum_price = ProductPrice::where('product_sku', $product['sku'])
+                $platinum_price = SamaPrices::where('product_id', $product['id'])
                     ->where('metalType', 'Platinum')
                     ->where('metalColor', 'White')
                     ->where('diamond_type', 'natural')
