@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductVideosModel;
+use App\Models\SamaProductVideosModel;
 use GuzzleHttp\Client;
 
 class DownloadProductVideos extends Command
@@ -20,41 +21,56 @@ class DownloadProductVideos extends Command
 
     ## script to download images on loacl storage
     public function handle()
-{
-    $products = DB::table('products')->select('id', 'sku', 'internal_sku', 'videos')->get();
-    $client = new \GuzzleHttp\Client();
+    {
+        $products = DB::table('tbl_products')->select('id', 'entity_id', 'sama_sku', 'videos')->get();
+        $client = new \GuzzleHttp\Client();
 
-    foreach ($products as $product) {
-        $sku = $product->sku;
-        $product_id = $product->id;
-        $internalSku = $product->internal_sku;
+        foreach ($products as $product) {
+            $sku = $product->sama_sku;
+            $product_id = $product->id;
+            $entity_id = $product->entity_id;
 
-        if (!is_null($product->videos)) {
-            $videos = json_decode($product->videos);
+            if (!is_null($product->videos)) {
+                // Split the comma-separated string into an array of video URLs
+                $videos = explode(',', $product->videos);
 
-            if (!is_object($videos)) {
-                $this->error("Invalid or empty video data for SKU: $internalSku");
-                continue;
-            }
+                // Check if the array is valid and not empty
+                if (empty($videos)) {
+                    $this->error("Empty or invalid video data for SKU: $entity_id");
+                    continue;
+                }
 
-            $localFolder = storage_path("app/public/videos/$internalSku");
-            if (!file_exists($localFolder)) {
-                mkdir($localFolder, 0777, true);
-            }
+                $localFolder = storage_path("app/public/videos/$entity_id");
+                if (!file_exists($localFolder)) {
+                    mkdir($localFolder, 0777, true);
+                }
 
-            foreach (['white', 'yellow', 'rose'] as $color) {
-                if (isset($videos->$color)) {
-                    $videoUrl = filter_var($videos->$color, FILTER_SANITIZE_URL);
+                foreach ($videos as $videoUrl) {
+                    // Clean and validate the URL
+                    $videoUrl = trim($videoUrl);  // Remove any extra spaces
+                    $videoUrl = filter_var($videoUrl, FILTER_SANITIZE_URL);
 
-                    // Validate URL
                     if (filter_var($videoUrl, FILTER_VALIDATE_URL) === FALSE) {
-                        $this->error("Invalid URL for {$color} color video: $videoUrl");
+                        $this->error("Invalid video URL: $videoUrl for SKU: $entity_id");
                         continue;
                     }
 
+                    // Check which color the video corresponds to based on the URL
+                    if (strpos($videoUrl, 'white') !== false) {
+                        $color = 'white';
+                    } elseif (strpos($videoUrl, 'yellow') !== false) {
+                        $color = 'yellow';
+                    } elseif (strpos($videoUrl, 'rose') !== false) {
+                        $color = 'rose';
+                    } else {
+                        $this->error("No recognized color found in video URL: $videoUrl for SKU: $entity_id");
+                        continue;
+                    }
+
+                    // Process and download the video
                     $videoName = basename($videoUrl);
                     $extension = pathinfo($videoName, PATHINFO_EXTENSION);
-                    $videoFileName = "{$internalSku}.video.{$color}.{$extension}";
+                    $videoFileName = "{$entity_id}.video.{$color}.{$extension}";
                     $localPath = "$localFolder/$videoFileName";
 
                     try {
@@ -64,8 +80,8 @@ class DownloadProductVideos extends Command
                         $response = $client->get($videoUrl, ['sink' => $localPath]);
 
                         // Update the database
-                        ProductVideosModel::updateOrCreate(
-                            ['product_id' => $product_id, 'product_sku' => $internalSku, 'color' => $color],
+                        SamaProductVideosModel::updateOrCreate(
+                            ['product_id' => $product_id, 'product_sku' => $sku, 'color' => $color],
                             ['video_path' => $videoFileName]
                         );
                         $this->info("Downloaded {$color} color video $videoUrl to $localPath.");
@@ -75,180 +91,9 @@ class DownloadProductVideos extends Command
                         $this->error("Unexpected error occurred: " . $e->getMessage());
                     }
                 }
+            } else {
+                $this->error("Empty videos for SKU: $entity_id");
             }
-        } else {
-            $this->error("Empty videos for SKU: $internalSku");
         }
     }
-}
-
-    // public function handle()
-    // {
-    //     $products = DB::table('products')->select('id', 'sku', 'internal_sku', 'videos')->get();
-    //     $client = new \GuzzleHttp\Client();
-
-    //     foreach ($products as $product) {
-    //         $sku = $product->sku;
-    //         $product_id = $product->id;
-    //         $internalSku = $product->internal_sku;
-
-    //         if (!is_null($product->videos)) {
-    //             $videos = json_decode($product->videos);
-
-    //             // Check if video data is valid
-    //             if (!is_object($videos)) {
-    //                 $this->error("Invalid or empty video data for SKU: $internalSku");
-    //                 continue;
-    //             }
-
-    //             $localFolder = storage_path("app/public/videos/$internalSku");
-    //             if (!file_exists($localFolder)) {
-    //                 mkdir($localFolder, 0777, true);
-    //             }
-
-    //             foreach (['white', 'yellow', 'rose'] as $color) {
-    //                 if (isset($videos->$color)) {
-    //                     $videoUrl = $videos->$color;
-    //                     $videoName = basename($videoUrl);
-    //                     $extension = pathinfo($videoName, PATHINFO_EXTENSION);
-    //                     $videoFileName = "{$internalSku}.video.{$color}.{$extension}";
-
-    //                     // Create the full local path for the video
-    //                     $localPath = "$localFolder/$videoFileName";
-
-    //                     try {
-    //                         // Download the video
-    //                         $response = $client->get($videoUrl, ['sink' => $localPath]);
-
-    //                         // Update the database
-    //                         ProductVideosModel::updateOrCreate(
-    //                             ['product_id' => $product_id, 'product_sku' => $internalSku, 'color' => $color],
-    //                             ['video_path' => $videoFileName]
-    //                         );
-    //                         $this->info("Downloaded {$color} color video $videoUrl to $localPath.");
-    //                     } catch (\Exception $e) {
-    //                         $this->error("Failed to download {$color} color video $videoUrl: " . $e->getMessage());
-    //                     }
-    //                 }
-    //             }
-    //         } else {
-    //             $this->error("Empty videos for SKU: $internalSku");
-    //         }
-    //     }
-    // }
-
-    // public function handle()
-    // {
-    //     $products = DB::table('products')->select('id', 'sku', 'internal_sku', 'videos')->get();
-    //     $client = new \GuzzleHttp\Client();
-
-    //     foreach ($products as $product) {
-    //         $sku = $product->sku;
-    //         $product_id = $product->id;
-    //         $internalSku = $product->internal_sku;
-
-    //         if (!is_null($product->videos)) {
-    //             $videos = json_decode($product->videos);
-
-    //             // Check if images data is valid
-    //             if (!is_object($videos)) {
-    //                 $this->error("Invalid or empty video data for SKU: $internalSku");
-    //                 continue;
-    //             }
-
-    //             $localFolder = storage_path("app/public/videos/$internalSku");
-    //             if (!file_exists($localFolder)) {
-    //                 mkdir($localFolder, 0777, true);
-    //             }
-
-    //             foreach (['white', 'yellow', 'rose'] as $color) {
-    //                 if (isset($videos->$color)) {
-    //                     $videoUrl = $videos->$color;
-    //                     $videoName = basename($videoUrl);
-    //                     $extension = pathinfo($videoName, PATHINFO_EXTENSION);
-    //                     $videoFileName = "{$internalSku}.video.{$color}.{$extension}";
-
-    //                     // Create the full local path for the video
-    //                     $localPath = "$localFolder/$videoFileName";
-
-    //                     try {
-    //                         $response = $client->get($videoUrl);
-    //                         file_put_contents($localPath, $response->getBody());
-    //                         // Update the database
-    //                         ProductVideosModel::updateOrCreate(
-    //                             ['product_id' => $product_id, 'product_sku' => $internalSku, 'color'=>$color ,'video_path' => $videoFileName]
-    //                         );
-    //                         $this->info("Downloaded {$color} color video $videoUrl to $localPath.");
-    //                     } catch (\Exception $e) {
-    //                         $this->error("Failed to download {$color} color video $videoUrl: " . $e->getMessage());
-    //                     }
-    //                 }
-    //             }
-    //         } else {
-    //             $this->error("Empty videos for SKU: $internalSku");
-    //         }
-    //     }
-    // }
-
-    // public function handle()
-    // {
-    //     $products = DB::table('products')->select('id', 'sku', 'internal_sku', 'videos')->get();
-    //     $client = new \GuzzleHttp\Client();
-
-    //     foreach ($products as $product) {
-    //         $sku = $product->sku;
-    //         $product_id = $product->id;
-    //         $internalSku = $product->internal_sku;
-    //         if (!is_null($product->videos)) {
-    //             $videos = json_decode($product->videos);
-    //             ## Check if images data is valid
-    //             if (!is_object($videos)) {
-    //                 $this->error("Invalid or empty video data for SKU: $internalSku");
-    //                 continue;
-    //             } else {
-    //                 ## make logic here to download videos
-    //                 $localFolder = storage_path("app/public/videos/$internalSku");
-    //                 if (!file_exists($localFolder)) {
-    //                     mkdir($localFolder, 0777, true);
-    //                 }
-    //                 if (isset($videos->white)) {
-    //                     $white =  basename($videos->white);
-    //                     $extension = pathinfo($white, PATHINFO_EXTENSION);
-    //                     $whiteVidName = $internalSku . '.' . 'video' . '.' . 'white' . '.' . $extension;
-    //                     ## download this white video in the $localFolder this folder
-    //                     // Create the full local path for the image
-    //                     $localPath = "$localFolder/$whiteVidName";
-    //                     $response = $client->get($videos->white);
-    //                     file_put_contents($localPath, $response->getBody());
-    //                     $this->info("Downloaded white color video $videos->white to $localPath.");
-    //                 }
-
-    //                 if (isset($videos->yellow)) {
-    //                     $yellow = basename($videos->yellow);
-    //                     $extension = pathinfo($yellow, PATHINFO_EXTENSION);
-    //                     $yellowVidName = $internalSku . '.' . 'video' . '.' . 'yellow' . '.' . $extension;
-    //                     ## download this white video in the $localFolder this folder
-    //                     $localPath = "$localFolder/$yellowVidName";
-    //                     $response = $client->get($videos->yellow);
-    //                     file_put_contents($localPath, $response->getBody());
-    //                     $this->info("Downloaded yellow color video $videos->yellow to $localPath.");
-    //                 }
-
-    //                 if (isset($videos->rose)) {
-    //                     $reso = basename($videos->rose);
-    //                     $extension = pathinfo($reso, PATHINFO_EXTENSION);
-    //                     $rosewVidName = $internalSku . '.' . 'video' . '.' . 'rose' . '.' . $extension;
-    //                     ## download this white video in the $localFolder this folder
-    //                     $localPath = "$localFolder/$rosewVidName";
-    //                     $response = $client->get($videos->rose);
-    //                     file_put_contents($localPath, $response->getBody());
-    //                     $this->info("Downloaded rose color video $videos->rose to $localPath.");
-    //                 }
-    //             }
-    //         } else {
-    //             $this->error("Empty videos for SKU: $internalSku");
-    //             continue;
-    //         }
-    //     }
-    // }
 }
