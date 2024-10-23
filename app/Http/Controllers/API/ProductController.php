@@ -16,6 +16,7 @@ use App\Models\ProductSubcategory;
 use App\Models\CenterStone;
 use App\Models\Menu;
 use App\Models\SamaPrices;
+use App\Models\SamaProductImageModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -192,7 +193,7 @@ class ProductController extends Controller
                 $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $product->entity_id . '/' . $product->entity_id . '.' . $extension;
                 $product->default_image_url = $defaulImg;
                 ## product images
-                $pro_images =  ProductImageModel::where('product_id', $product['id'])->get();
+                $pro_images =  SamaProductImageModel::where('product_id', $product['id'])->get();
                 $images_arr = [];
                 if (count($pro_images) > 0) {
                     foreach ($pro_images as $product_img) {
