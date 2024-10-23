@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Console\Commands\SamaPrice;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductModel;
@@ -17,6 +18,7 @@ use App\Models\CenterStone;
 use App\Models\Menu;
 use App\Models\SamaPrices;
 use App\Models\SamaProductImageModel;
+use App\Models\SamaProductVideosModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -193,7 +195,7 @@ class ProductController extends Controller
                 $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $product->entity_id . '/' . $product->entity_id . '.' . $extension;
                 $product->default_image_url = $defaulImg;
                 ## product images
-                $pro_images =  SamaProductImageModel::where('product_id', $product['id'])->get();
+                $pro_images =  ProductImageModel::where('product_id', $product['id'])->get();
                 $images_arr = [];
                 if (count($pro_images) > 0) {
                     foreach ($pro_images as $product_img) {
@@ -265,7 +267,7 @@ class ProductController extends Controller
         $output['msg'] = 'data retrieved successfully';
 
         if (!is_null($entity_id)) {
-            $product =  ProductModel::where('entity_id', $entity_id)->orWhere('slug', $entity_id)->first();
+            $product =  InternalProducts::where('entity_id', $entity_id)->orWhere('slug', $entity_id)->first();
             $product['name'] = ucfirst(strtolower(!empty($product['name']) ? $product['name'] : $product['product_browse_pg_name']));
             $product['description'] = ucfirst(strtolower($product['description']));
             $product['meta_title'] = ucfirst(strtolower(!empty($product['meta_title']) ? $product['meta_title'] : $product['name']));
@@ -273,38 +275,38 @@ class ProductController extends Controller
             // $product['images'] = json_decode($product['images']);
             // $product['videos'] = json_decode($product['videos']);
             ## fetch images from s3 and database
-            $pro_images =  ProductImageModel::where('product_id', $product['id'])->get();
+            $pro_images =  SamaProductImageModel::where('product_id', $product['id'])->get();
             $images_arr = [];
             if (count($pro_images) > 0) {
                 foreach ($pro_images as $product_img) {
-                    $pimg =   env('AWS_URL') . 'products/images/' . $product['internal_sku'] . '/' . $product_img['image_path'];
+                    $pimg =   env('AWS_URL') . 'images_and_videos/images/' . $product['entity_id'] . '/' . $product_img['image_path'];
                     $images_arr[] = $pimg;
                 }
             } else {
-                $images_arr = json_decode($product['images']);
+                $images_arr = explode(',',$product['images']);
             };
             $product['images'] = $images_arr;
 
             ## fetch videos from database
-            $pro_videos = ProductVideosModel::where('product_id', $product['id'])->get();
+            $pro_videos = SamaProductVideosModel::where('product_id', $product['id'])->get();
             if (count($pro_videos) > 0) {
                 $videos_by_color  = [];
                 foreach ($pro_videos as $product_vid) {
                     $color = $product_vid['color'];
-                    $video_path = env('AWS_URL') . 'products/videos/' . $product['internal_sku'] . '/' . $product_vid['video_path'];
+                    $video_path = env('AWS_URL') . 'images_and_videos/videos/' . $product['entity_id'] . '/' . $product_vid['entity_id'];
 
                     $videos_by_color[$color] = $video_path;
                 }
             } else {
-                $videos_by_color  = json_decode($product['videos']);
+                $videos_by_color  = explode(',',$product['videos']);
             };
             $product['videos'] = $videos_by_color;
 
-            $priceData = ProductPrice::where('product_sku', $product['sku'])->where('metalType', '18kt')->where('metalColor', 'White')->where('diamond_type', 'natural')->first();
+            $priceData = SamaPrices::where('product_id', $product['id'])->where('metalType', '18kt')->where('metalColor', 'White')->where('diamond_type', 'natural')->first();
             $product['white_gold_price'] = round($priceData['price'] ?? 0, 0);
-            $product['yellow_gold_price'] = round(ProductPrice::where('product_sku', $product['sku'])->where('metalType', '18kt')->where('metalColor', 'Yellow')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
-            $product['rose_gold_price'] = round(ProductPrice::where('product_sku', $product['sku'])->where('metalType', '18kt')->where('metalColor', 'Pink')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
-            $product['platinum_price'] = round(ProductPrice::where('product_sku', $product['sku'])->where('metalType', 'Platinum')->where('metalColor', 'White')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
+            $product['yellow_gold_price'] = round(SamaPrices::where('product_id', $product['id'])->where('metalType', '18kt')->where('metalColor', 'Yellow')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
+            $product['rose_gold_price'] = round(SamaPrices::where('product_id', $product['id'])->where('metalType', '18kt')->where('metalColor', 'Pink')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
+            $product['platinum_price'] = round(SamaPrices::where('product_id', $product['id'])->where('metalType', 'Platinum')->where('metalColor', 'White')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
             $product['diamond_type'] = 'natural';
             $product['diamondQuality'] = $priceData['diamondQuality'] ?? 0;
             $product['metalType'] = '18KT Gold';
@@ -315,15 +317,15 @@ class ProductController extends Controller
             $product['center_stone_options'] = implode('/', $center_stone_options);
             if (!is_null($product['matching_wedding_band']) || !empty($product['matching_wedding_band'])) {
                 ## if matching set exist then reterive tha details and send them
-                $is_matchingset = ProductModel::where('sku', $product['matching_wedding_band']);
+                $is_matchingset = InternalProducts::where('sama_sku', $product['matching_wedding_band']);
                 if ($is_matchingset->exists()) {
                     $matching_bands_product = $is_matchingset->first();
-                    $matching_bands_product->price = round(ProductPrice::where('product_sku', $matching_bands_product['sku'])->where('metalType', '18kt')->where('metalColor', 'White')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
+                    $matching_bands_product->price = round(SamaPrices::where('product_id', $matching_bands_product['id'])->where('metalType', '18kt')->where('metalColor', 'White')->where('diamond_type', 'natural')->first()['price'] ?? 0, 0);
                     ## Parse the URL and get the path
                     $pathM = parse_url($matching_bands_product->default_image_url, PHP_URL_PATH);
                     $extensionM = pathinfo($pathM, PATHINFO_EXTENSION);
                     ## create image
-                    $MdefaulImg = env('AWS_URL') . 'products/images/' . $matching_bands_product->internal_sku . '/' . $matching_bands_product->internal_sku . '.' . $extensionM;
+                    $MdefaulImg = env('AWS_URL') . 'images_and_videos/images/' . $matching_bands_product->entity_id . '/' . $matching_bands_product->entity_id . '.' . $extensionM;
                     $matching_bands_product->default_image_url = $MdefaulImg;
                     $product['matching_wedding_band'] = $matching_bands_product;
                 } else {
@@ -346,8 +348,9 @@ class ProductController extends Controller
                 $product['similar_products'] = json_encode($this->getSimilarProducts($product['similar_products']));
             }
 
-            if ($product['parent_sku'] != NULL) {
-                $var = ProductModel::where('parent_sku', $product['parent_sku'])->get();
+
+            if ($product['sama_parent_sku'] != NULL || !empty($product['sama_parent_sku']) || $product['sama_parent_sku'] != '' ) {
+                $var = InternalProducts::where('sama_parent_sku', $product['sama_parent_sku'])->get();
                 if ($var->isNotEmpty()) {
                     $collect_fractionsemimount = [];
                     $vardata = [];
@@ -365,8 +368,8 @@ class ProductController extends Controller
                     }
                 }
                 $product['variants'] = $vardata;
-            } else if ($product['parent_sku'] == NULL || empty($product['parent_sku'])) {
-                $var = ProductModel::where('parent_sku', $product['sku'])->get();
+            } else if ($product['sama_parent_sku'] == NULL || empty($product['sama_parent_sku'])) {
+                $var = InternalProducts::where('sama_parent_sku', $product['sama_sku'])->get();
                 if ($var->isNotEmpty()) {
                     $collect_fractionsemimount = [];
                     $vardata = [];
