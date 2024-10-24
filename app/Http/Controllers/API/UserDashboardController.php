@@ -154,6 +154,13 @@ class UserDashboardController extends Controller
             if (!empty($cartitems->ring_id)) {
                 // fetch ring data here
                 $ring_data = InternalProducts::where('id', $cartitems->ring_id)->first();
+
+                $path = parse_url($ring_data->default_image_url, PHP_URL_PATH);
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
+                ## create image
+                $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $ring_data->entity_id . '/' . $ring_data->entity_id . '.' . $extension;
+                $ring_data->default_image_url = $defaulImg;
+
                 $item_data['ring'] = $ring_data;
             } else {
                 $item_data['ring'] = [];
@@ -259,6 +266,12 @@ class UserDashboardController extends Controller
             if (!empty($cartitems->ring_id)) {
                 // fetch ring data here
                 $ring_data = InternalProducts::where('id', $cartitems->ring_id)->first();
+
+                $path = parse_url($ring_data->default_image_url, PHP_URL_PATH);
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
+                ## create image
+                $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $ring_data->entity_id . '/' . $ring_data->entity_id . '.' . $extension;
+                $ring_data->default_image_url = $defaulImg;
                 $item_data['ring'] = $ring_data;
             } else {
                 $item_data['ring'] = [];
