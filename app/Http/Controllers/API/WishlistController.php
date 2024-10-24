@@ -8,6 +8,8 @@ use App\Models\Cart;
 use App\Models\ProductModel;
 use App\Models\ProductPrice;
 use App\Models\Wishlist;
+use App\Models\InternalProducts;
+use App\Models\SamaPrices;
 use Validator;
 
 class WishlistController extends Controller
@@ -132,10 +134,10 @@ class WishlistController extends Controller
 
                 if (!is_null($item_data['band_sku']) || !empty($item_data['band_sku'])) {
                     ## if matching set exist then reterive tha details and send them
-                    $is_matchingset = ProductModel::where('sku', $item_data['band_sku']);
+                    $is_matchingset = InternalProducts::where('sama_sku', $item_data['band_sku']);
                     if ($is_matchingset->exists()) {
                         $matching_bands_product = $is_matchingset->first();
-                        $matching_bands_product->price = ProductPrice::where('product_sku', $item_data['band_sku'])->where('metalType', '18kt')->where('metalColor', 'White')->where('diamond_type', 'natural')->first()['price'] ?? 0;
+                        $matching_bands_product->price = SamaPrices::where('product_id', $matching_bands_product['id'])->where('metalType', '18kt')->where('metalColor', 'White')->where('diamond_type', 'natural')->first()['price'] ?? 0;
 
                         $item_data['matching_wedding_band'] = $matching_bands_product;
                     } else {
@@ -145,7 +147,7 @@ class WishlistController extends Controller
 
                 if (!empty($cartitems->ring_id)) {
                     // fetch ring data here
-                    $ring_data = ProductModel::where('id', $cartitems->ring_id)->first();
+                    $ring_data = InternalProducts::where('id', $cartitems->ring_id)->first();
                     $item_data['ring'] = $ring_data;
                 } else {
                     $item_data['ring'] = [];
