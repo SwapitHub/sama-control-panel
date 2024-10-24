@@ -30,13 +30,13 @@ class ProductController extends Controller
     public function fetchProductPriceing(Request $request)
     {
         $rules = [
-            'product_sku' => 'required',
+            'product_id' => 'required',
             'metalType' => 'required',
             'metalColor' => 'required',
             'diamond_type' => 'required'
         ];
         $messages = [
-            'product_sku.required' => 'Product Sku is required.',
+            'product_id.required' => 'Product id is required.',
             'metalType.required' => 'Metal Type is required.',
             'metalColor.required' => 'Metal Color is required.',
             'diamond_type.required' => 'Diamond Type is required.',
@@ -53,8 +53,7 @@ class ProductController extends Controller
             } else {
                 $metalColor = $request->metalColor;
             }
-            $product_price  = SamaPrices::where('sku', $request->product_sku)
-                ->orWhere('product_id',$request->product_sku)
+            $product_price  = SamaPrices::where('product_id', $request->product_id)
                 ->where('metalType', $request->metalType)
                 ->where('metalColor', $metalColor)
                 ->where('diamond_type', $request->diamond_type)
