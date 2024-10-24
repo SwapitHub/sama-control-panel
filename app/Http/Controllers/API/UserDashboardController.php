@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Models\Cart;
 use App\Models\ProductModel;
+use App\Models\InternalProducts;
 use App\Models\Wishlist;
 use App\Models\User;
 use App\Models\OrderModel;
@@ -152,7 +153,7 @@ class UserDashboardController extends Controller
 
             if (!empty($cartitems->ring_id)) {
                 // fetch ring data here
-                $ring_data = ProductModel::where('id', $cartitems->ring_id)->first();
+                $ring_data = InternalProducts::where('id', $cartitems->ring_id)->first();
                 $item_data['ring'] = $ring_data;
             } else {
                 $item_data['ring'] = [];
@@ -257,7 +258,7 @@ class UserDashboardController extends Controller
 
             if (!empty($cartitems->ring_id)) {
                 // fetch ring data here
-                $ring_data = ProductModel::where('id', $cartitems->ring_id)->first();
+                $ring_data = InternalProducts::where('id', $cartitems->ring_id)->first();
                 $item_data['ring'] = $ring_data;
             } else {
                 $item_data['ring'] = [];
