@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\TransactionModel;
 use App\Models\AddresModel;
 use App\Models\ProductModel;
+use App\Models\InternalProducts;
 use Validator;
 
 class OrdersController extends Controller
@@ -71,9 +72,9 @@ class OrdersController extends Controller
                 // fetch ring details for order
                 if (!empty($order_data->ring_id)) {
                     $ring_details_arr = [];
-                    $ring_data = ProductModel::find($order_data->ring_id);
+                    $ring_data = InternalProducts::find($order_data->ring_id);
                     $ring_details_arr['ring_name'] = $ring_data['name'];
-                    $ring_details_arr['ring_style'] = $ring_data['internal_sku'];
+                    $ring_details_arr['ring_style'] = $ring_data['sama_sku'];
                     $ring_details_arr['ring_size'] = $order_data->ring_size;
                     $ring_details_arr['ring_price'] = $order_data->ring_price;
                     // get product Image
