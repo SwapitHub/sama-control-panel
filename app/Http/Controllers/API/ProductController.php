@@ -53,7 +53,8 @@ class ProductController extends Controller
             } else {
                 $metalColor = $request->metalColor;
             }
-            $product_price  = ProductPrice::where('product_sku', $request->product_sku)
+            $product_price  = SamaPrices::where('sku', $request->product_sku)
+                ->orWhere('product_id',$request->product_sku)
                 ->where('metalType', $request->metalType)
                 ->where('metalColor', $metalColor)
                 ->where('diamond_type', $request->diamond_type)
@@ -268,6 +269,7 @@ class ProductController extends Controller
 
         if (!is_null($entity_id)) {
             $product =  InternalProducts::where('entity_id', $entity_id)->orWhere('slug', $entity_id)->first();
+        // echo "SOK ".$product['sama_parent_sku'];
             $product['name'] = ucfirst(strtolower(!empty($product['name']) ? $product['name'] : $product['product_browse_pg_name']));
             $product['description'] = ucfirst(strtolower($product['description']));
             $product['meta_title'] = ucfirst(strtolower(!empty($product['meta_title']) ? $product['meta_title'] : $product['name']));
@@ -349,7 +351,7 @@ class ProductController extends Controller
             }
 
 
-            // dd($product['sama_parent_sku']);
+
 
             if ($product['sama_parent_sku'] != NULL || !empty($product['sama_parent_sku']) || $product['sama_parent_sku'] != '' ) {
                 $var = InternalProducts::where('sama_parent_sku', $product['sama_parent_sku'])->get();
@@ -409,13 +411,14 @@ class ProductController extends Controller
         $output['msg'] = 'suggestions are ...';
         $q = $request->input('q');
         if (!empty($q)) {
-            $products = ProductModel::orderBy('entity_id', 'desc')
-                ->whereNull('parent_sku')
-                ->orWhereColumn('products.sku', 'products.parent_sku')
+            $products = InternalProducts::orderBy('entity_id', 'desc')
+                ->whereNull('sama_parent_sku')
+                ->orWhere('sama_parent_sku', '=' ,'')
+                // ->orWhereColumn('tbl_products.sasku', 'products.parent_sku')
                 ->where('status', 'true')
                 ->where(function ($query) use ($q) {
                     $query->where('name', 'like', "$q%")
-                        ->orWhere('sku', 'like', "$q%")
+                        ->orWhere('sama_sku', 'like', "$q%")
                         ->orWhere('metalColor', 'like', "$q%")
                         ->orWhere('diamondQuality', 'like', "$q%")
                         ->orWhere('diamondQuality', 'like', "$q%")
@@ -428,19 +431,19 @@ class ProductController extends Controller
                         ->orWhere('metalWeight', 'like', "$q%")
                         ->orWhere('finishLevel', 'like', "$q%");
                 })
-                ->select('name', 'product_browse_pg_name', 'fractionsemimount', 'slug', 'menu', 'default_image_url', 'white_gold_price', 'sku', 'type', 'internal_sku')
+                ->select('name', 'product_browse_pg_name', 'fractionsemimount','entity_id', 'slug', 'menu', 'default_image_url', 'white_gold_price', 'sama_sku', 'type', 'internal_sku')
                 ->limit(5)
                 ->get();
             $searched_product = [];
             foreach ($products as $product) {
                 $product->description = ucfirst(strtolower($product->description));
-                $product->images = json_decode($product->images);
+                $product->images = explode(',',$product->images);
                 $path = parse_url($product->default_image_url, PHP_URL_PATH);
                 $extension = pathinfo($path, PATHINFO_EXTENSION);
                 ## create image
-                $defaulImg = env('AWS_URL') . 'products/images/' . $product->internal_sku . '/' . $product->internal_sku . '.' . $extension;
+                $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $product->entity_id . '/' . $product->entity_id . '.' . $extension;
                 $product->default_image_url = $defaulImg;
-                $product->videos = json_decode($product->videos);
+                $product->videos = explode(',',$product->videos);
                 $name = strtolower($product->name);
                 $product->name = ucfirst($name);
                 $product->menu = Menu::find($product->menu)['slug'];
@@ -461,12 +464,13 @@ class ProductController extends Controller
         $output['msg'] = 'data retrieved successfully';
         $q = $request->input('q');
         if (!empty($q)) {
-            $products = ProductModel::orderBy('entity_id', 'desc')
-                ->whereNull('parent_sku')
+            $products = InternalProducts::orderBy('entity_id', 'desc')
+                ->whereNull('sama_parent_sku')
+                ->orWhere('sama_parent_sku', '=' ,'')
                 ->where('status', 'true')
                 ->where(function ($query) use ($q) {
                     $query->where('name', 'like', "$q%")
-                        ->orWhere('sku', 'like', "$q%")
+                        ->orWhere('sama_sku', 'like', "$q%")
                         ->orWhere('metalColor', 'like', "$q%")
                         ->orWhere('diamondQuality', 'like', "$q%")
                         ->orWhere('diamondQuality', 'like', "$q%")
@@ -518,7 +522,7 @@ class ProductController extends Controller
                 $path = parse_url($product->default_image_url, PHP_URL_PATH);
                 $extension = pathinfo($path, PATHINFO_EXTENSION);
                 ## create image
-                $defaulImg = env('AWS_URL') . 'products/images/' . $product->internal_sku . '/' . $product->internal_sku . '.' . $extension;
+                $defaulImg = env('AWS_URL') . 'images_and_videos/images/' . $product->entity_id . '/' . $product->entity_id . '.' . $extension;
                 $product->default_image_url = $defaulImg;
                 $product->videos = json_decode($product->videos);
                 $name = strtolower($product->product_browse_pg_name);
