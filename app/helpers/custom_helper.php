@@ -88,7 +88,7 @@ if (!function_exists('getSubCategories')) {
 if (!function_exists('getProductImages')) {
     function getProductImages($id, $color)
     {
-        $product =  ProductModel::where('id', $id)->first();
+        $product =  ProductImageModel::where('id', $id)->first();
         if (!isset($product->default_image_url)) {
             return null;
         }
