@@ -84,7 +84,6 @@ if (!function_exists('getSubCategories')) {
     }
 }
 
-
 if (!function_exists('getProductImages')) {
     function getProductImages($id, $color)
     {
