@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\MetalColor;
 use App\Models\RingMetal;
 use App\Models\CenterStone;
+use App\Models\InternalProducts;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 
@@ -87,7 +88,7 @@ if (!function_exists('getSubCategories')) {
 if (!function_exists('getProductImages')) {
     function getProductImages($id, $color)
     {
-        $product =  ProductImageModel::where('id', $id)->first();
+        $product =  InternalProducts::where('id', $id)->first();
         if (!isset($product->default_image_url)) {
             return null;
         }
