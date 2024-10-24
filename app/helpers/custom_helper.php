@@ -95,7 +95,8 @@ if (!function_exists('getProductImages')) {
         $imageovermounting = $product->default_image_url;
 
         $extension = pathinfo($imageovermounting, PATHINFO_EXTENSION);
-        $image =  env('AWS_URL') . 'products/images/' . $product->internal_sku . '/' . $product->internal_sku . '.' . $extension;
+        // $image =  env('AWS_URL') . 'products/images/' . $product->internal_sku . '/' . $product->internal_sku . '.' . $extension;
+        $image =  env('AWS_URL') . 'images_and_videos/images/' . $product->entity_id . '/' . $product->entity_id . '.' . $extension;
         $img = explode('.' . $extension, $image);
         switch ($color) {
             case '18K WHITE GOLD':

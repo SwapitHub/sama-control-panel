@@ -27,11 +27,6 @@ class InternalProductExport implements FromQuery, WithHeadings
                 'tbl_products.parent_sku',
                 'tbl_products.sama_parent_sku',
                 DB::raw("CASE WHEN tbl_products.type = 'parent_product' THEN 'PARENT' ELSE 'CHILD' END AS type"),
-                DB::raw(
-                    '
-                    TRIM(REPLACE(REPLACE(REPLACE(COALESCE(tbl_products.fractionsemimount, "0"), " ct", ""), " tw", ""), "/", "")) AS formatted_fraction
-                    '
-                ),
                 'tbl_products.sama_sku',
                 'tbl_products.fractionsemimount',
                 'tbl_products.fractionsemimount_value',
@@ -164,7 +159,6 @@ class InternalProductExport implements FromQuery, WithHeadings
             'PARENT SKU',
             'SAMA PARENT',
             'PARENT_CHILD',
-            'SAMA CHILD SKU',
             'SAMA SKU',
             'fractionsemimount',
             'fractionsemimount_value',
